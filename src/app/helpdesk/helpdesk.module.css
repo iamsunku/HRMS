@@ -1,0 +1,240 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.topSummary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.summaryCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.summaryIcon {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.summaryInfo span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.summaryInfo h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.actionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tabs {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.tabs button {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: all 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.tabs button.activeTab {
+    color: #3b82f6;
+}
+
+.tabs button.activeTab::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #3b82f6;
+}
+
+.rightActions {
+    display: flex;
+    gap: 1rem;
+}
+
+.search {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 100px;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 300px;
+}
+
+.search input {
+    background: none;
+    border: none;
+    height: 48px;
+    color: #0f172a;
+    width: 100%;
+    font-size: 0.875rem;
+    outline: none;
+    font-weight: 500;
+}
+
+.primaryBtn {
+    background: #1e3a8a;
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.tableCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #64748b;
+    background: #f8fafc;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.table td {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #0f172a;
+}
+
+.tktId {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.tktInfo strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.tktInfo span {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.categoryBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+.priorityBadge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.priorityBadge.urgent {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.priorityBadge.high {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.priorityBadge.medium {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+}
+
+.priorityBadge.low {
+    background: rgba(148, 163, 184, 0.1);
+    color: #64748b;
+}
+
+.statusBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    width: fit-content;
+}
+
+.statusBadge.open {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.statusBadge.inprogress {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+}
+
+.statusBadge.resolved {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.moreBtn {
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.moreBtn:hover {
+    color: #0f172a;
+}

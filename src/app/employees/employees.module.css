@@ -1,0 +1,230 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 1rem 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats {
+    display: flex;
+    gap: 4rem;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.statItem span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.statItem strong {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #1c2434;
+    letter-spacing: -0.05em;
+    line-height: 1;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.primaryBtn {
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 0.875rem 1.75rem;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 800;
+    font-size: 0.875rem;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    transition: all 0.3s ease;
+}
+
+.primaryBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+}
+
+.secondaryBtn {
+    background: #1c2434;
+    color: #ffffff;
+    border: none;
+    border-radius: 100px;
+    padding: 0.875rem 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.secondaryBtn:hover {
+    background: #2d3748;
+    transform: translateY(-2px);
+}
+
+.employeeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.employeeCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 2rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.employeeCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 1.5rem;
+    background: linear-gradient(135deg, #60a5fa, #34d399);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.employeeCard:nth-child(2n) .avatar {
+    background: linear-gradient(135deg, #fbbf24, #f87171);
+}
+
+.employeeCard:nth-child(3n) .avatar {
+    background: linear-gradient(135deg, #a78bfa, #f472b6);
+}
+
+.moreBtn {
+    color: #94a3b8;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.moreBtn:hover {
+    color: #0f172a;
+    background: #f1f5f9;
+}
+
+.cardBody h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+}
+
+.role {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.deptBadge {
+    display: inline-block;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+}
+
+.infoList {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.infoItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.infoItem svg {
+    color: #94a3b8;
+}
+
+.cardFooter {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statusBadge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.375rem 1rem;
+    border-radius: 100px;
+    letter-spacing: 0.025em;
+}
+
+.statusBadge.active {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.statusBadge.onleave {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+
+.viewBtn {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.viewBtn:hover {
+    color: #1e3a8a;
+    text-decoration: underline;
+}
