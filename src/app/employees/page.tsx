@@ -30,6 +30,10 @@ export default function EmployeesPage() {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState(true);
     const [usingMockData, setUsingMockData] = useState(false);
+    const [page, setPage] = useState(1);
+    const [limit] = useState(25);
+    const [total, setTotal] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const { user } = useUser();
 
     const isAuthorized = user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN';
@@ -37,10 +41,13 @@ export default function EmployeesPage() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const res = await fetch('/api/employees');
+                setLoading(true);
+                const res = await fetch(`/api/employees?page=${page}&limit=${limit}`);
                 const data = await res.json();
                 if (data.success) {
                     setEmployees(data.data);
+                    setTotal(data.meta?.total ?? data.data.length);
+                    setTotalPages(data.meta?.totalPages ?? 1);
                     setUsingMockData(false);
                 } else {
                     throw new Error(data.error);
@@ -49,13 +56,15 @@ export default function EmployeesPage() {
                 console.error('Failed to fetch employees, using mock data:', err);
                 setEmployees(MOCK_EMPLOYEES);
                 setUsingMockData(true);
+                setTotal(MOCK_EMPLOYEES.length);
+                setTotalPages(1);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchEmployees();
-    }, []);
+    }, [page, limit]);
 
     if (loading) {
         return (
@@ -103,7 +112,7 @@ export default function EmployeesPage() {
                             </div>
                             <div>
                                 <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Total Headcount</div>
-                                <div className="text-xl font-bold text-gray-900">{employees.length}</div>
+                                <div className="text-xl font-bold text-gray-900">{total}</div>
                             </div>
                         </div>
                     </div>
@@ -205,6 +214,26 @@ export default function EmployeesPage() {
                             </Button>
                         </div>
                     )}
+                </div>
+
+                {/* Pagination */}
+                <div className="flex items-center justify-between mt-6">
+                    <div className="text-sm text-gray-600">Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}</div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                        >
+                            Prev
+                        </Button>
+                        <div className="px-3 text-sm">Page {page} of {totalPages}</div>
+                        <Button
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page >= totalPages}
+                        >
+                            Next
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Shell>

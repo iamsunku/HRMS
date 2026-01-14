@@ -1,19 +1,135 @@
 .container {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     width: 100vw;
-    background: #ffffff;
+    background-color: #f1f5f9;
+    overflow: hidden;
+    position: relative;
+    animation: pageReveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes pageReveal {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+.masterBgWrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.masterBgImage {
+    object-fit: cover;
+    animation: masterZoom 40s infinite alternate linear;
+}
+
+@keyframes masterZoom {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+.masterBgOverlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to right, rgba(255, 255, 255, 0.7) 10%, rgba(255, 255, 255, 0.1) 100%),
+        radial-gradient(circle at 20% 50%, transparent 0%, rgba(0, 0, 0, 0.05) 100%);
+    z-index: 2;
 }
 
 .leftSide {
     display: none;
     width: 50%;
-    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
     position: relative;
-    overflow: hidden;
     padding: 4rem;
+    color: #0f172a;
     flex-direction: column;
     justify-content: space-between;
+    z-index: 10;
+    height: 100%;
+}
+
+.brandWallGrid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at 2px 2px, rgba(30, 58, 138, 0.08) 1.5px, transparent 0);
+    background-size: 50px 50px;
+    opacity: 0.6;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, black, transparent);
+    animation: gridPulse 8s infinite alternate ease-in-out;
+}
+
+.holographicOverlay {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+            rgba(255, 255, 255, 0.03) 0px,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px,
+            transparent 2px);
+    background-size: 100% 3px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+@keyframes gridPulse {
+    0% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
+}
+
+.dataBeam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(249, 115, 22, 0.04) 45%,
+            rgba(30, 58, 138, 0.06) 50%,
+            rgba(249, 115, 22, 0.04) 55%,
+            transparent 100%);
+    z-index: -1;
+    transform: rotate(-45deg) translateX(-100%);
+    animation: flow 10s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes flow {
+    from {
+        transform: rotate(-45deg) translateX(-100%);
+    }
+
+    to {
+        transform: rotate(-45deg) translateX(100%);
+    }
 }
 
 @media (min-width: 1024px) {
@@ -22,13 +138,432 @@
     }
 }
 
+.branding {
+    position: relative;
+}
+
+.premiumLogo {
+    position: relative;
+    width: fit-content;
+    padding: 1.25rem 3.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(30px);
+    border-radius: 500px;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 1.5px rgba(255, 255, 255, 1);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(30, 58, 138, 0.03);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.orbitContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 450px;
+    height: 450px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.orbitNode {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e3a8a;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid white;
+    animation: floatNode 6s infinite ease-in-out;
+}
+
+@keyframes floatNode {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+.node1 {
+    top: 15%;
+    left: 0%;
+    animation-delay: 0s;
+}
+
+.node2 {
+    top: 0%;
+    right: 15%;
+    animation-delay: 1.5s;
+}
+
+.node3 {
+    bottom: 15%;
+    right: 0%;
+    animation-delay: 3s;
+}
+
+.node4 {
+    bottom: 0%;
+    left: 15%;
+    animation-delay: 4.5s;
+}
+
+.premiumLogo::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.8),
+            transparent);
+    transform: rotate(30deg);
+    animation: shimmer 4s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -60%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    50% {
+        left: 150%;
+        opacity: 1;
+    }
+
+    100% {
+        left: 150%;
+        opacity: 0;
+    }
+}
+
+.premiumLogo:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 30px 60px -12px rgba(0, 0, 0, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 1);
+}
+
+.hrmBadge {
+    margin-top: -1.75rem;
+    margin-left: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    border-radius: 100px;
+    /* Stadium Shape */
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 30;
+    border: 1px solid rgba(255, 255, 255, 1);
+    box-shadow:
+        0 20px 40px -10px rgba(0, 0, 0, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 1);
+    overflow: hidden;
+    animation: badgeEntrance 1.2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+    cursor: default;
+    transition: all 0.4s ease;
+}
+
+.hrmBadge:hover {
+    transform: translateX(5px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes badgeEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.hrmBadge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(30, 58, 138, 0.05), transparent);
+    transform: translateX(-100%);
+    animation: hrmScan 3s infinite linear;
+}
+
+@keyframes hrmScan {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    50%,
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.hrmText {
+    font-weight: 950;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: #1e3a8a;
+    position: relative;
+    z-index: 2;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: textReflect 5s linear infinite;
+}
+
+@keyframes textReflect {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.neuralDot {
+    width: 10px;
+    height: 10px;
+    background: #f97316;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.6);
+}
+
+/* Biometric Triple Pulse Animation */
+.neuralDot::before,
+.neuralDot::after,
+.dotCorePulse {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(249, 115, 22, 0.4);
+    pointer-events: none;
+}
+
+.neuralDot::before {
+    animation: dotPulseSonar 2s infinite ease-out;
+}
+
+.neuralDot::after {
+    animation: dotPulseSonar 2s infinite ease-out 0.6s;
+}
+
+.dotCorePulse {
+    animation: dotPulseSonar 2s infinite ease-out 1.2s;
+}
+
+@keyframes dotPulseSonar {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(3.5);
+        opacity: 0;
+    }
+}
+
+/* Tech Ring behind logo */
+.techRing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border: 1px dashed rgba(30, 58, 138, 0.1);
+    border-radius: 50%;
+    z-index: -1;
+    animation: rotateRing 20s infinite linear;
+}
+
+@keyframes rotateRing {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.logoImageContainer {
+    position: relative;
+    width: 180px;
+    height: 60px;
+}
+
+.logoImage {
+    object-fit: contain;
+}
+
+.mainTitle {
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    margin-bottom: 0.75rem;
+    color: #1e3a8a;
+    text-shadow: 0 4px 12px rgba(255, 255, 255, 0.8);
+    position: relative;
+}
+
+.brandStripe {
+    position: absolute;
+    top: 50%;
+    left: -4rem;
+    height: 120%;
+    width: 8px;
+    background: linear-gradient(to bottom, #1e3a8a, #f97316, #1e3a8a);
+    border-radius: 10px;
+    transform: translateY(-50%);
+    box-shadow: 0 0 30px rgba(30, 58, 138, 0.2);
+    animation: stripeFlow 10s infinite linear;
+}
+
+@keyframes stripeFlow {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 0% 200%;
+    }
+}
+
+.mainSubtitle {
+    font-size: 1.1rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+.bottomContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.testimonial {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    padding: 2.5rem;
+    border-radius: 3rem;
+    border: 1px solid rgba(255, 255, 255, 1);
+    max-width: 500px;
+    box-shadow:
+        0 40px 80px -20px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(30, 58, 138, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.testimonial::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #1e3a8a, #f97316);
+}
+
+.quoteIcon {
+    font-size: 2.5rem;
+    position: absolute;
+    top: -0.5rem;
+    left: 1.25rem;
+    color: #cbd5e1;
+}
+
+.testimonial p {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    font-style: italic;
+    color: #1e293b;
+}
+
+.authorSection {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.authorAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e3a8a, #f97316);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: white;
+}
+
+.featureRow {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 1);
+    color: #1e3a8a;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
 .rightSide {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background: #f8fafc;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 20;
+    height: 100%;
 }
 
 @media (min-width: 1024px) {
@@ -37,47 +572,209 @@
     }
 }
 
-.formCard {
+.formSection {
     width: 100%;
     max-width: 440px;
-    background: white;
+    background: rgba(211, 211, 202, 0.95);
+    backdrop-filter: blur(25px);
     padding: 2.5rem;
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border-radius: 3.5rem;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+    position: relative;
 }
 
-.shape1 {
+.formHeader {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-radius: 2.5rem;
+    overflow: hidden;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.cardHeroImageWrapper {
+    height: 120px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.scanLine {
     position: absolute;
-    top: -10%;
-    right: -10%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.shape2 {
-    position: absolute;
-    bottom: -15%;
-    left: -15%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
-    border-radius: 50%;
-}
-
-.branding {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to bottom, transparent, #f97316, transparent);
+    box-shadow: 0 0 15px #f97316;
     z-index: 10;
+    animation: scanner 3s infinite ease-in-out;
 }
 
-.testimonial {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+@keyframes scanner {
+    0% {
+        top: -10%;
+    }
+
+    50% {
+        top: 110%;
+    }
+
+    100% {
+        top: -10%;
+    }
+}
+
+.cardHeroImage {
+    object-fit: cover;
+    filter: brightness(0.8) contrast(1.2);
+}
+
+.formHeaderContent {
     padding: 1.5rem;
-    border-radius: 1rem;
-    color: white;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.headerIconWrapper {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 64px;
+    height: 64px;
+    background: white;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     z-index: 10;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.formTitle {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 1rem;
+}
+
+.formSubtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+}
+
+.watermarkLogo {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 180px;
+    height: 180px;
+    opacity: 0.03;
+    z-index: 1;
+    pointer-events: none;
+    transform: rotate(-15deg);
+}
+
+.formFooter {
+    margin-top: 2rem;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+/* Entry Animations */
+.fadeInLeft {
+    animation: fadeInLeft 1s forwards;
+}
+
+.fadeInUp {
+    animation: fadeInUp 1s forwards;
+    opacity: 0;
+}
+
+.fadeInScale {
+    animation: fadeInScale 0.8s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slowPulse {
+    from {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+
+    to {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
+
+.pulseDisk1 {
+    position: absolute;
+    top: -5%;
+    right: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 5;
+    animation: slowPulse 12s infinite alternate ease-in-out;
+}
+
+.pulseDisk2 {
+    position: absolute;
+    bottom: -10%;
+    left: -10%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(30, 58, 138, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 5;
+    animation: slowPulse 15s infinite alternate-reverse ease-in-out;
+}
+
+.premiumLogo {
+    position: relative;
+    width: 240px;
+    height: 80px;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
 }

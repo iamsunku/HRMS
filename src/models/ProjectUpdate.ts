@@ -16,4 +16,6 @@ const ProjectUpdateSchema = new mongoose.Schema({
     hoursSpent: Number,
 }, { timestamps: true });
 
+ProjectUpdateSchema.index({ projectId: 1, updateDate: -1 });
+
 export default mongoose.models.ProjectUpdate || mongoose.model('ProjectUpdate', ProjectUpdateSchema);

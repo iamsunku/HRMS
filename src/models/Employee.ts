@@ -40,4 +40,6 @@ const EmployeeSchema = new mongoose.Schema({
     aadharNumber: String,
 }, { timestamps: true });
 
+EmployeeSchema.index({ createdAt: -1 });
+
 export default mongoose.models.Employee || mongoose.model('Employee', EmployeeSchema);

@@ -4,8 +4,19 @@ import User from '@/models/User';
 import Employee from '@/models/Employee';
 import bcrypt from 'bcryptjs';
 
-export async function GET() {
+export async function GET(request: Request) {
     await dbConnect();
+
+    // Protect seeding with a secret. Set SEED_SECRET in your environment and pass it as 'x-seed-secret' header.
+    const seedSecret = process.env.SEED_SECRET;
+    if (!seedSecret) {
+        return NextResponse.json({ success: false, error: 'Seeding disabled (no SEED_SECRET configured).' }, { status: 403 });
+    }
+
+    const provided = request.headers.get('x-seed-secret') || '';
+    if (provided !== seedSecret) {
+        return NextResponse.json({ success: false, error: 'Forbidden: invalid seed secret.' }, { status: 403 });
+    }
 
     try {
         const salt = await bcrypt.genSalt(10);

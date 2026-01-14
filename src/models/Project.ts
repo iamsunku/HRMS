@@ -24,4 +24,7 @@ const ProjectSchema = new mongoose.Schema({
     departments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Department' }]
 }, { timestamps: true });
 
+ProjectSchema.index({ createdAt: -1 });
+ProjectSchema.index({ status: 1 });
+
 export default mongoose.models.Project || mongoose.model('Project', ProjectSchema);

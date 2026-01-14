@@ -25,4 +25,8 @@ const JobSchema = new mongoose.Schema({
     iconColor: { type: String, default: 'bg-blue-600' }
 }, { timestamps: true });
 
+JobSchema.index({ department: 1 });
+JobSchema.index({ status: 1 });
+JobSchema.index({ postedDate: -1 });
+
 export default mongoose.models.Job || mongoose.model('Job', JobSchema);

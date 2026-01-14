@@ -5,8 +5,18 @@ import Employee from '@/models/Employee';
 import Department from '@/models/Department';
 import ProjectUpdate from '@/models/ProjectUpdate';
 
-export async function GET() {
+export async function GET(request: Request) {
     await dbConnect();
+
+    const seedSecret = process.env.SEED_SECRET;
+    if (!seedSecret) {
+        return NextResponse.json({ success: false, error: 'Seeding disabled (no SEED_SECRET configured).' }, { status: 403 });
+    }
+
+    const provided = request.headers.get('x-seed-secret') || '';
+    if (provided !== seedSecret) {
+        return NextResponse.json({ success: false, error: 'Forbidden: invalid seed secret.' }, { status: 403 });
+    }
 
     try {
         // Clear existing projects to avoid duplicates during seeding

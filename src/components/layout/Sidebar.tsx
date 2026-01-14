@@ -19,7 +19,8 @@ import {
     ChevronLeft,
     LogOut,
     Wallet,
-    Building2
+    Building2,
+    MessageSquare
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -40,6 +41,7 @@ const menuItems = [
     { icon: Wallet, label: 'Finance & Budget', href: '/finance' },
     { icon: PieChart, label: 'Reports & Analytics', href: '/reports' },
     { icon: Briefcase, label: 'Projects', href: '/projects' },
+    { icon: MessageSquare, label: 'Messages', href: '/messages' },
 ];
 
 export default function Sidebar() {
