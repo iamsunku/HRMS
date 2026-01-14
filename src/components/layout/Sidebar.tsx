@@ -20,7 +20,8 @@ import {
     LogOut,
     Wallet,
     Building2,
-    MessageSquare
+    MessageSquare,
+    X
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -44,7 +45,12 @@ const menuItems = [
     { icon: MessageSquare, label: 'Messages', href: '/messages' },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const pathname = usePathname();
     const { user } = useUser();
 
@@ -61,7 +67,7 @@ export default function Sidebar() {
     });
 
     return (
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
             <div className={styles.logoContainer}>
                 <Link href="/" className={styles.logo}>
                     <Image
@@ -73,6 +79,9 @@ export default function Sidebar() {
                     />
                     <span>KICCPA</span>
                 </Link>
+                <button className={styles.closeTrigger} onClick={onClose} aria-label="Close Menu">
+                    <X size={24} />
+                </button>
             </div>
 
             <nav className={styles.nav}>
@@ -84,6 +93,7 @@ export default function Sidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            onClick={onClose}
                             className={`${styles.navItem} ${isActive ? styles.active : ''}`}
                         >
                             <div className={styles.iconWrapper}>

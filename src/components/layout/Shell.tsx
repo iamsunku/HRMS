@@ -11,11 +11,28 @@ interface ShellProps {
 }
 
 export default function Shell({ children, title }: ShellProps) {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
     return (
-        <div className={styles.shell}>
-            <Sidebar />
+        <div className={`${styles.shell} ${isMobileMenuOpen ? styles.menuOpen : ''}`}>
+            {/* Mobile Backdrop */}
+            {isMobileMenuOpen && (
+                <div
+                    className={styles.backdrop}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
+            <Sidebar
+                isOpen={isMobileMenuOpen}
+                onClose={() => setIsMobileMenuOpen(false)}
+            />
+
             <div className={styles.mainContent}>
-                <Header title={title} />
+                <Header
+                    title={title}
+                    onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                />
                 <main className={styles.content}>
                     <div className="animate-fade-in">
                         {children}

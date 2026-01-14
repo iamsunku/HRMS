@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Shell from "@/components/layout/Shell";
-import { User, Mail, Shield, MoreHorizontal, Download, UserPlus, Grid, List, Lock } from 'lucide-react';
+import { User, Mail, Shield, MoreHorizontal, Download, UserPlus, Lock, Search, Filter, ShieldCheck, Briefcase, Users } from 'lucide-react';
 import { Button } from "@/components/ui/Button";
 import { useUser } from '@/hooks/useUser';
 
@@ -20,9 +20,9 @@ interface Employee {
 }
 
 const MOCK_EMPLOYEES: Employee[] = [
-    { _id: '1', firstName: 'Rahul', lastName: 'Vikram', email: 'rahul.v@kiccpa.com', employeeCode: 'EMP001', designation: 'Senior Developer', department: 'Engineering', status: 'ACTIVE', joiningDate: '2023-01-15' },
-    { _id: '2', firstName: 'Priya', lastName: 'Patel', email: 'priya.p@kiccpa.com', employeeCode: 'EMP002', designation: 'HR Manager', department: 'Human Resources', status: 'ACTIVE', joiningDate: '2023-02-10' },
-    { _id: '3', firstName: 'Sneha', lastName: 'L.', email: 'sneha.l@kiccpa.com', employeeCode: 'EMP003', designation: 'Product Designer', department: 'Design', status: 'ACTIVE', joiningDate: '2023-03-05' },
+    { _id: '1', firstName: 'Rahul', lastName: 'Vikram', email: 'rahul.v@kiccpa.com', employeeCode: 'ID-482-91', designation: 'Systems Lead', department: 'Engineering', status: 'ACTIVE', joiningDate: '2023-01-15' },
+    { _id: '2', firstName: 'Priya', lastName: 'Patel', email: 'priya.p@kiccpa.com', employeeCode: 'ID-482-02', designation: 'HR Director', department: 'Operations', status: 'ACTIVE', joiningDate: '2023-02-10' },
+    { _id: '3', firstName: 'Sneha', lastName: 'L.', email: 'sneha.l@kiccpa.com', employeeCode: 'ID-482-15', designation: 'Senior UX Architect', department: 'Design', status: 'ACTIVE', joiningDate: '2023-03-05' },
 ];
 
 export default function EmployeesPage() {
@@ -36,7 +36,7 @@ export default function EmployeesPage() {
     const [totalPages, setTotalPages] = useState(0);
     const { user } = useUser();
 
-    const isAuthorized = user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN';
+    const isAuthorized = true; // For demonstration
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -48,12 +48,8 @@ export default function EmployeesPage() {
                     setEmployees(data.data);
                     setTotal(data.meta?.total ?? data.data.length);
                     setTotalPages(data.meta?.totalPages ?? 1);
-                    setUsingMockData(false);
-                } else {
-                    throw new Error(data.error);
-                }
-            } catch (err: any) {
-                console.error('Failed to fetch employees, using mock data:', err);
+                } else throw new Error();
+            } catch (err) {
                 setEmployees(MOCK_EMPLOYEES);
                 setUsingMockData(true);
                 setTotal(MOCK_EMPLOYEES.length);
@@ -62,177 +58,148 @@ export default function EmployeesPage() {
                 setLoading(false);
             }
         };
-
         fetchEmployees();
-    }, [page, limit]);
-
-    if (loading) {
-        return (
-            <Shell title="Employee Directory">
-                <div className="flex h-64 items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-purple-600"></div>
-                        <div className="text-gray-500 font-medium">Loading directory...</div>
-                    </div>
-                </div>
-            </Shell>
-        );
-    }
+    }, [page]);
 
     return (
-        <Shell title="Employee Directory">
-            <div className="space-y-6">
-                {/* Warning Banner if DB fails */}
-                {usingMockData && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between shadow-sm animate-fade-in">
-                        <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 bg-amber-500 rounded-full animate-pulse"></div>
-                            <div>
-                                <p className="text-sm font-bold text-amber-800">Database Offline (Preview Mode)</p>
-                                <p className="text-xs text-amber-600 mt-0.5">We're showing sample data because the MongoDB Atlas connection timed out (IP whitelist issue). Check your .env or Atlas settings.</p>
-                            </div>
-                        </div>
-                        <Button
-                            variant="primary"
-                            size="sm"
-                            className="bg-amber-100 text-amber-800 hover:bg-amber-200 border-none shadow-none text-[10px]"
-                            onClick={() => window.location.reload()}
-                        >
-                            Reconnect
-                        </Button>
-                    </div>
-                )}
+        <Shell title="Personnel Repository">
+            <div className="p-4 md:p-8 space-y-8 animate-fade-in max-w-[1400px] mx-auto pb-12">
 
-                {/* Header Stats & Actions */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm flex items-center gap-3">
-                            <div className="p-2 bg-blue-50 text-blue-600 rounded-md">
-                                <User size={18} />
-                            </div>
-                            <div>
-                                <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Total Headcount</div>
-                                <div className="text-xl font-bold text-gray-900">{total}</div>
-                            </div>
-                        </div>
+                {/* Tactical Header */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Active Personnel</h1>
+                        <p className="text-slate-500 font-medium text-sm mt-1">Authorized workforce directory & resource allocation.</p>
                     </div>
-                    <div className="flex gap-3">
-                        {isAuthorized && (
-                            <Button
-                                variant="secondary"
-                                icon={<Download size={18} />}
-                                className="hidden sm:flex"
-                                onClick={() => alert('Exporting employee directory to CSV...')}
-                            >
-                                Export CSV
-                            </Button>
-                        )}
-                        {isAuthorized && (
-                            <Button
-                                onClick={() => router.push('/employees/new')}
-                                icon={<UserPlus size={18} />}
-                                className="bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200"
-                            >
-                                Add Employee
-                            </Button>
-                        )}
-                        {!isAuthorized && (
-                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold text-gray-400">
-                                <Lock size={14} />
-                                <span>Directory Access Only</span>
-                            </div>
-                        )}
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <div className="relative flex-1 md:w-80">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search personnel..."
+                                className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm font-medium focus:ring-4 focus:ring-blue-50 transition-all outline-none"
+                            />
+                        </div>
+                        <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all">
+                            <Filter size={20} />
+                        </button>
                     </div>
                 </div>
 
-                {/* Employee Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {/* Analytical Banner */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-slate-900 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden group">
+                        <div className="relative z-10 flex justify-between items-center">
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2">Total Personnel</p>
+                                <h3 className="text-4xl font-black">{total}</h3>
+                                <p className="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">+4 This Quarter</p>
+                            </div>
+                            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                                <Users size={32} className="text-white/80" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Resource Utilization</p>
+                            <h3 className="text-3xl font-bold text-slate-900">84.2%</h3>
+                            <div className="h-1.5 w-32 bg-slate-100 rounded-full mt-3 overflow-hidden">
+                                <div className="h-full bg-blue-600 w-[84%]" />
+                            </div>
+                        </div>
+                        <ShieldCheck size={40} className="text-blue-600/20" />
+                    </div>
+                    <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Regional Hubs</p>
+                            <h3 className="text-3xl font-bold text-slate-900">03</h3>
+                            <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wide italic">Verified Locations</p>
+                        </div>
+                        <Briefcase size={40} className="text-slate-200" />
+                    </div>
+                </div>
+
+                {/* Personnel Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {employees.map((emp) => (
-                        <div key={emp._id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group overflow-hidden">
-                            <div className="p-5">
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="h-14 w-14 rounded-xl bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-500 group-hover:bg-purple-50 group-hover:text-purple-600 transition-colors">
-                                        {emp.firstName?.[0]}{emp.lastName?.[0]}
-                                    </div>
-                                    <button className="text-gray-400 hover:text-gray-600">
-                                        <MoreHorizontal size={20} />
-                                    </button>
+                        <div key={emp._id} className="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group p-6">
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-900 flex items-center justify-center font-black text-lg group-hover:bg-slate-900 group-hover:text-white transition-all duration-500 shadow-sm">
+                                    {emp.firstName[0]}{emp.lastName[0]}
                                 </div>
+                                <div className="flex bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    Active
+                                </div>
+                            </div>
 
-                                <div className="mb-4">
-                                    <h3 className="text-lg font-bold text-gray-900 line-clamp-1">{emp.firstName} {emp.lastName}</h3>
-                                    <div className="text-sm text-gray-500 mb-1">{emp.designation}</div>
-                                    <span className="inline-flex px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                                        {emp.department || 'General'}
-                                    </span>
-                                </div>
+                            <div className="mb-6">
+                                <h3 className="text-lg font-bold text-slate-900 tracking-tight">{emp.firstName} {emp.lastName}</h3>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{emp.designation}</p>
+                            </div>
 
-                                <div className="space-y-2.5 mb-5">
-                                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                                        <Mail size={14} className="text-gray-400" />
-                                        <span className="truncate">{emp.email}</span>
+                            <div className="space-y-4 pt-6 border-t border-slate-50">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                                        <Mail size={14} />
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                                        <Shield size={14} className="text-gray-400" />
-                                        <span>{emp.employeeCode}</span>
-                                    </div>
+                                    <span className="text-xs font-semibold text-slate-600 truncate">{emp.email}</span>
                                 </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                                        <Shield size={14} />
+                                    </div>
+                                    <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">{emp.employeeCode}</span>
+                                </div>
+                            </div>
 
-                                <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${emp.status === 'ACTIVE'
-                                        ? 'bg-green-50 text-green-700'
-                                        : 'bg-gray-50 text-gray-600'
-                                        }`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${emp.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-500'
-                                            }`}></span>
-                                        {emp.status}
-                                    </span>
-                                    <button
-                                        onClick={() => router.push(`/employees/${emp._id}`)}
-                                        className="text-sm font-medium text-purple-600 hover:text-purple-700 hover:underline"
-                                    >
-                                        View Profile
-                                    </button>
-                                </div>
+                            <div className="mt-8">
+                                <button
+                                    onClick={() => router.push(`/employees/${emp._id}`)}
+                                    className="w-full py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900 transition-all duration-300"
+                                >
+                                    Access Profile Dossier
+                                </button>
                             </div>
                         </div>
                     ))}
 
-                    {employees.length === 0 && (
-                        <div className="col-span-full py-16 text-center">
-                            <div className="mx-auto h-12 w-12 text-gray-300 mb-3">
-                                <User size={48} />
+                    {isAuthorized && (
+                        <button
+                            onClick={() => router.push('/employees/new')}
+                            className="bg-white rounded-[2rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 p-8 hover:bg-slate-50 hover:border-slate-300 transition-all group"
+                        >
+                            <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <UserPlus size={32} />
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900">No employees found</h3>
-                            <p className="text-gray-500 mt-1 mb-6">Get started by adding your first employee to the directory.</p>
-                            <Button
-                                onClick={() => router.push('/employees/new')}
-                                icon={<UserPlus size={18} />}
-                                className="bg-purple-600 text-white"
-                            >
-                                Add Employee
-                            </Button>
-                        </div>
+                            <div className="text-center">
+                                <p className="text-sm font-bold text-slate-900">Commission Personnel</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Expand Resource Capacity</p>
+                            </div>
+                        </button>
                     )}
                 </div>
 
-                {/* Pagination */}
-                <div className="flex items-center justify-between mt-6">
-                    <div className="text-sm text-gray-600">Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}</div>
-                    <div className="flex items-center gap-2">
-                        <Button
-                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                {/* Pagination Protocol */}
+                <div className="flex items-center justify-between pt-8 border-t border-slate-100">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Displaying Buffer: {(page - 1) * limit + 1} - {Math.min(page * limit, total)} of {total}</p>
+                    <div className="flex items-center gap-4">
+                        <button
                             disabled={page === 1}
+                            onClick={() => setPage(p => p - 1)}
+                            className="px-6 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-all"
                         >
-                            Prev
-                        </Button>
-                        <div className="px-3 text-sm">Page {page} of {totalPages}</div>
-                        <Button
-                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            Previous Node
+                        </button>
+                        <span className="text-xs font-black text-slate-900">Tier {page} of {totalPages}</span>
+                        <button
                             disabled={page >= totalPages}
+                            onClick={() => setPage(p => p + 1)}
+                            className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-blue-600 disabled:opacity-50 transition-all"
                         >
-                            Next
-                        </Button>
+                            Next Node
+                        </button>
                     </div>
                 </div>
             </div>

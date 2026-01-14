@@ -1,23 +1,61 @@
+:root {
+    --sidebar-width: 270px;
+}
+
 .shell {
     display: flex;
     min-height: 100vh;
-    background: #ffffff;
+    background: #f8fafc;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 .mainContent {
     flex: 1;
-    margin-left: 270px;
+    margin-left: var(--sidebar-width);
     display: flex;
     flex-direction: column;
-    background: #f0f2f5;
-    border-top-left-radius: 4rem;
+    background: #f8fafc;
     min-height: 100vh;
-    box-shadow: -15px 0 30px rgba(0, 0, 0, 0.03);
     position: relative;
     overflow: hidden;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .content {
-    padding: 1rem 3rem 3rem 3rem;
+    padding: 1.5rem 2rem;
     flex: 1;
+    max-width: 100%;
+}
+
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    animation: fadeInHelp 0.3s ease;
+}
+
+@keyframes fadeInHelp {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1200px) {
+    .content {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .mainContent {
+        margin-left: 0;
+        border-top-left-radius: 2rem;
+    }
 }

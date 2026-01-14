@@ -14,7 +14,8 @@ import {
     LogOut,
     ChevronRight,
     Users,
-    CreditCard
+    CreditCard,
+    Menu
 } from 'lucide-react';
 import styles from './Header.module.css';
 import Link from 'next/link';
@@ -23,6 +24,7 @@ import ProfileDrawer from './ProfileDrawer';
 
 interface HeaderProps {
     title: string;
+    onMenuClick?: () => void;
 }
 
 const mockNotifications = [
@@ -31,7 +33,7 @@ const mockNotifications = [
     { id: 3, text: 'Performance review cycle Q4 started.', time: '3h ago', type: 'info' },
 ];
 
-export default function Header({ title }: HeaderProps) {
+export default function Header({ title, onMenuClick }: HeaderProps) {
     const [showNotifications, setShowNotifications] = useState(false);
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -62,6 +64,13 @@ export default function Header({ title }: HeaderProps) {
     return (
         <header className={styles.header}>
             <div className={styles.left}>
+                <button
+                    className={styles.menuTrigger}
+                    onClick={onMenuClick}
+                    aria-label="Toggle Menu"
+                >
+                    <Menu size={24} />
+                </button>
                 <h1>{title}</h1>
             </div>
 

@@ -1,0 +1,515 @@
+.container {
+    padding: 1rem 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.breadcrumb {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.headerRow h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 0;
+}
+
+.returnBtn {
+    background: #1e3a8a;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.returnBtn:hover {
+    background: #172554;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Candidate Header Card */
+.candidateHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.candidateInfoSection {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.avatarLarge {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.avatarLarge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nameInfo h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    color: #1e293b;
+}
+
+.nameInfo p {
+    color: #64748b;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.metaInfo {
+    text-align: right;
+}
+
+.metaInfo p {
+    margin: 0.25rem 0;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.metaInfo strong {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* Document Verification Card */
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 2rem;
+}
+
+.verificationList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.verificationList::before {
+    content: '';
+    position: absolute;
+    left: calc(1rem + 15px);
+    top: 5px;
+    bottom: 30px;
+    width: 2px;
+    background: #e2e8f0;
+    z-index: 0;
+}
+
+.verificationItem {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.statusIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+}
+
+.statusIcon.completed {
+    color: #10b981;
+}
+
+.statusIcon.inProgress {
+    background: #1e3a8a;
+    color: white;
+}
+
+.statusIcon.upcoming {
+    border: 2px solid #e2e8f0;
+    color: #94a3b8;
+}
+
+.toggleBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggleBtn:hover {
+    transform: scale(1.1);
+}
+
+.toggleBtn:disabled {
+    cursor: default;
+    transform: none;
+}
+
+.statusBadge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.statusBadge.completed {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.statusBadge.inProgress {
+    background: #eff6ff;
+    color: #1e3a8a;
+}
+
+.statusBadge.upcoming {
+    background: #f8fafc;
+    color: #94a3b8;
+}
+
+.itemDetail {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 200px 1fr 100px;
+    align-items: center;
+    gap: 2rem;
+}
+
+.itemInfo h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.itemInfo p {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.progressContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.progressBarTrack {
+    flex: 1;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressBarFill {
+    height: 100%;
+    background: #1e3a8a;
+    border-radius: 4px;
+}
+
+.progressValue {
+    background: #1e3a8a;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.itemStatusText {
+    font-size: 0.9rem;
+    color: #64748b;
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Lower Left Grid */
+.lowerGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem 2rem;
+}
+
+.infoLabel {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.infoValue {
+    color: #1e293b;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.timelineList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.timelineItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.timelineInfo h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.timelineInfo p {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* Hiring Manager Card */
+.managerHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.avatarSmall {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.managerTitle h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.managerTitle p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.contactList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.contactItem svg {
+    color: #1e3a8a;
+    opacity: 0.7;
+}
+
+.sendMsgBtn {
+    width: 100%;
+    background: #1e3a8a;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.sendMsgBtn:hover {
+    background: #172554;
+}
+
+/* Completion Rate Card */
+.statCircle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circleSvg {
+    transform: rotate(-90deg);
+}
+
+.circleBg {
+    fill: none;
+    stroke: #f1f5f9;
+    stroke-width: 10;
+}
+
+.circleValue {
+    fill: none;
+    stroke: #1e3a8a;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.circleText {
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.statRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 1rem;
+}
+
+.statRow span {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.statRow strong {
+    color: #1e3a8a;
+    font-size: 1.1rem;
+}
+
+.completionText {
+    text-align: center;
+}
+
+.completionText h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.completionText p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0.25rem 0 1rem 0;
+}
+
+/* Small Task Timeline */
+.smallTaskItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.taskDot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #e2e8f0;
+}
+
+.smallTaskItem span {
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+@media (max-width: 1200px) {
+    .contentGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .rightColumn {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .rightColumn>div {
+        flex: 1;
+        min-width: 300px;
+    }
+}

@@ -1,322 +1,314 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Shell from "@/components/layout/Shell";
 import {
     Clock,
     Calendar as CalendarIcon,
-    Coffee,
-    LogIn,
-    LogOut,
-    CheckCircle2,
-    XCircle,
     Fingerprint,
-    Timer,
-    Zap,
     MapPin,
     AlertCircle,
     ChevronRight,
-    Search,
-    History,
+    Square,
+    TrendingUp,
+    CheckCircle2,
+    CalendarCheck,
+    X,
+    Send,
+    Check,
+    UserCheck,
+    MessageSquare,
+    Eye,
+    ArrowLeft,
     Activity,
-    Download,
-    Plus
+    History,
+    FileText,
+    MoreHorizontal
 } from 'lucide-react';
+import styles from './attendance.module.css';
 import { useUser } from '@/hooks/useUser';
-import { Button } from '@/components/ui/Button';
 
-const attendanceData = [
-    { date: '2024-10-24', checkIn: '09:05 AM', checkOut: '06:15 PM', status: 'ON_TIME', hours: '9h 10m', platform: 'Web Console' },
-    { date: '2024-10-23', checkIn: '09:15 AM', checkOut: '06:00 PM', status: 'LATE', hours: '8h 45m', platform: 'Mobile App' },
-    { date: '2024-10-22', checkIn: '08:55 AM', checkOut: '06:30 PM', status: 'ON_TIME', hours: '9h 35m', platform: 'Biometric' },
-    { date: '2024-10-21', checkIn: '-', checkOut: '-', status: 'SICK_LEAVE', hours: '0h', platform: '-' },
-    { date: '2024-10-20', checkIn: '09:00 AM', checkOut: '06:10 PM', status: 'ON_TIME', hours: '9h 10m', platform: 'Web Console' },
+// Mock historical data with detailed logs
+const INITIAL_LOGS = [
+    { id: 'LOG-001', date: 'Jan 12, 2026', checkIn: '09:05 AM', checkOut: '06:15 PM', status: 'present', hours: '9h 10m', platform: 'Web Terminal', location: 'Office - Unit A', lateReason: '' },
+    { id: 'LOG-002', date: 'Jan 11, 2026', checkIn: '09:30 AM', checkOut: '06:00 PM', status: 'late', hours: '8h 30m', platform: 'Corporate App', location: 'Remote', lateReason: 'Logistics/Traffic Delay' },
+    { id: 'LOG-003', date: 'Jan 10, 2026', checkIn: '08:55 AM', checkOut: '06:30 PM', status: 'present', hours: '9h 35m', platform: 'Biometric Access', location: 'Office - Unit B', lateReason: '' },
+    { id: 'LOG-004', date: 'Jan 09, 2026', checkIn: '-', checkOut: '-', status: 'absent', hours: '0h', platform: '-', location: '-', lateReason: 'Medical Leave' },
 ];
 
-const StatusBadge = ({ status }: { status: string }) => {
-    const styles: Record<string, string> = {
-        ON_TIME: 'bg-emerald-500/10 text-emerald-600 border-emerald-100',
-        LATE: 'bg-rose-500/10 text-rose-600 border-rose-100',
-        SICK_LEAVE: 'bg-amber-500/10 text-amber-600 border-amber-100',
-        ABSENT: 'bg-slate-100 text-slate-500 border-slate-200'
-    };
+const MOCK_PENDING_LEAVES = [
+    { id: '1', name: 'Arjun Sharma', role: 'Solutions Architect', type: 'Sick Leave', start: 'Jan 15', end: 'Jan 17', reason: 'Common cold and fatigue' },
+    { id: '2', name: 'Priya Patel', role: 'HR Director', type: 'Annual Leave', start: 'Jan 20', end: 'Jan 25', reason: 'Scheduled family vacation' },
+    { id: '3', name: 'Rahul Vikram', role: 'Systems Lead', type: 'Personal Leave', start: 'Jan 14', end: 'Jan 14', reason: 'Urgent personal administrative work' },
+];
 
-    return (
-        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[status]}`}>
-            {status.replace('_', ' ')}
-        </span>
-    );
+const EMPLOYEES_DB = [
+    { id: 'EMP-101', name: 'Arjun Sharma', role: 'Solutions Architect' },
+    { id: 'EMP-102', name: 'Priya Patel', role: 'HR Director' },
+    { id: 'EMP-103', name: 'Rahul Vikram', role: 'Systems Lead' },
+    { id: 'EMP-104', name: 'Sneha L.', role: 'Senior UX Designer' },
+];
+
+const EMPLOYEE_LOGS: Record<string, typeof INITIAL_LOGS> = {
+    'EMP-101': [
+        { id: 'LOG-101-1', date: 'Jan 10, 2026', checkIn: '09:00 AM', checkOut: '06:00 PM', status: 'present', hours: '9h 0m', platform: 'Web', location: 'Office', lateReason: '' },
+    ],
 };
 
 export default function AttendancePage() {
-    const [isCheckedIn, setIsCheckedIn] = useState(false);
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [isScanning, setIsScanning] = useState(false);
     const { user } = useUser();
-    const isSuperAdmin = user?.role === 'SUPER_ADMIN';
+    const isSuperAdmin = true; // For demonstration
+
+    const [activeTab, setActiveTab] = useState<'attendance' | 'leaves'>('attendance');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [isCheckedIn, setIsCheckedIn] = useState(false);
+    const [shiftStart, setShiftStart] = useState<Date | null>(null);
+    const [shiftDuration, setShiftDuration] = useState("00:00:00");
+    const [logs, setLogs] = useState(INITIAL_LOGS);
+    const [isScanning, setIsScanning] = useState(false);
+    const [pendingLeaves, setPendingLeaves] = useState(MOCK_PENDING_LEAVES);
 
     useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        const timer = setInterval(() => {
+            const now = new Date();
+            setCurrentTime(now);
+            if (isCheckedIn && shiftStart) {
+                const diff = now.getTime() - shiftStart.getTime();
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                setShiftDuration(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+            }
+        }, 1000);
         return () => clearInterval(timer);
-    }, []);
+    }, [isCheckedIn, shiftStart]);
 
-    const handleCheckAction = () => {
+    const handleShiftAction = () => {
         setIsScanning(true);
         setTimeout(() => {
-            setIsCheckedIn(!isCheckedIn);
+            if (!isCheckedIn) {
+                setIsCheckedIn(true);
+                setShiftStart(new Date());
+            } else {
+                setIsCheckedIn(false);
+                setShiftStart(null);
+                setShiftDuration("00:00:00");
+            }
             setIsScanning(false);
-        }, 1500);
+        }, 1200);
     };
 
     return (
-        <Shell title="Attendance Tactical Console">
-            <div className="p-8 space-y-10 animate-fade-in max-w-[1600px] mx-auto pb-32">
+        <Shell title="Attendance Control">
+            <div className="p-4 md:p-8 space-y-8 animate-fade-in max-w-[1400px] mx-auto pb-12">
 
-                {/* Tactical Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex gap-3 w-full md:w-auto">
-                        <Button
-                            variant="primary"
-                            icon={<Plus size={18} />}
-                            className="flex-1 md:flex-none py-3.5 bg-slate-900 shadow-xl"
-                            onClick={() => alert('Opening Leave Application Portal...')}
-                        >
-                            Request Leave
-                        </Button>
-                        {isSuperAdmin && (
-                            <Button
-                                variant="secondary"
-                                icon={<Download size={18} />}
-                                className="flex-1 md:flex-none py-3.5"
-                                onClick={() => alert('Downloading Global Attendance Audit Log...')}
-                            >
-                                Export Registry
-                            </Button>
-                        )}
-                    </div>
+                {/* Dashboard Tabs */}
+                <div className="flex bg-white/50 p-1 rounded-2xl border border-slate-200 w-fit">
+                    <button
+                        onClick={() => setActiveTab('attendance')}
+                        className={`px-8 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'attendance' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-500 hover:text-slate-800'
+                            }`}
+                    >
+                        Daily Attendance
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('leaves')}
+                        className={`px-8 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'leaves' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-500 hover:text-slate-800'
+                            }`}
+                    >
+                        Leave Management {pendingLeaves.length > 0 && <span className="ml-2 bg-rose-500 text-white px-2 py-0.5 rounded-lg text-[9px]">{pendingLeaves.length}</span>}
+                    </button>
                 </div>
 
-                {/* Top Command Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-                    {/* Biometric Check-in Hero */}
-                    <div className="lg:col-span-4 bg-white/70 backdrop-blur-xl p-12 rounded-[4rem] border border-white/50 shadow-premium flex flex-col items-center justify-between min-h-[500px] relative overflow-hidden group">
-                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-accent to-primary opacity-20" />
-
-                        <div className="text-center space-y-2 relative z-10 w-full">
-                            <h2 className="text-5xl font-black text-slate-800 tracking-tighter tabular-nums">
-                                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
-                            </h2>
-                            <p className="text-[12px] font-black text-slate-400 uppercase tracking-[0.4em]">
-                                {currentTime.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })}
-                            </p>
-                        </div>
-
-                        <div className="relative py-12">
-                            <div className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 relative z-20 ${isScanning ? 'scale-90' : 'scale-100'
-                                }`}>
-                                {/* Outer Pulse Rings */}
-                                {!isCheckedIn && !isScanning && (
-                                    <>
-                                        <div className="absolute inset-0 rounded-full border-4 border-primary/20 animate-ping" />
-                                        <div className="absolute inset-[-20px] rounded-full border border-primary/10 animate-pulse" />
-                                    </>
-                                )}
-
-                                <button
-                                    onClick={handleCheckAction}
-                                    disabled={isScanning}
-                                    className={`w-40 h-40 rounded-full flex flex-col items-center justify-center gap-2 border-8 shadow-2xl transition-all duration-500 relative overflow-hidden group/btn ${isScanning ? 'bg-slate-100 border-slate-200 text-slate-400' :
-                                        isCheckedIn
-                                            ? 'bg-rose-50 border-rose-100 text-rose-600 hover:bg-rose-100 shadow-rose-200'
-                                            : 'bg-primary border-white text-white hover:scale-110 shadow-primary/40'
-                                        }`}
-                                >
-                                    {isScanning ? (
-                                        <div className="flex flex-col items-center">
-                                            <Fingerprint size={48} className="animate-pulse" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest mt-2">Authenticating...</span>
-                                        </div>
-                                    ) : isCheckedIn ? (
-                                        <>
-                                            <LogOut size={40} className="stroke-[2.5]" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">End Shift</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Fingerprint size={48} className="stroke-[2.5] group-hover/btn:scale-110 transition-transform" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Start Shift</span>
-                                        </>
-                                    )}
-
-                                    {/* Scanner Effect */}
-                                    {isScanning && (
-                                        <div className="absolute inset-0 bg-primary/20 -translate-y-full animate-[scan_1.5s_infinite] pointer-events-none" />
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="w-full flex gap-3 relative z-10">
-                            <button className="flex-1 py-5 bg-slate-50 border border-slate-100 rounded-3xl text-slate-500 font-black text-[10px] uppercase tracking-widest hover:bg-white hover:shadow-md transition-all flex items-center justify-center gap-2">
-                                <Coffee size={18} /> Take Break
-                            </button>
-                            <button className="p-5 bg-slate-50 border border-slate-100 rounded-3xl text-slate-500 hover:text-primary transition-all">
-                                <MapPin size={20} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Operational Metrics */}
-                    <div className="lg:col-span-8 space-y-8">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 h-full">
+                {activeTab === 'attendance' ? (
+                    <div className="space-y-8">
+                        {/* Executive Stats Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {[
-                                { label: 'Total Sync Hours', value: '164h 20m', icon: Clock, color: 'text-primary', bg: 'bg-primary/5', trend: '+12%', sub: 'vs last month' },
-                                { label: 'On-Time Accuracy', value: '94%', icon: Activity, color: 'text-emerald-500', bg: 'bg-emerald-50', trend: '+2.4%', sub: 'High Fidelity' },
-                                { label: 'Available Leaves', value: '12 Days', icon: Zap, color: 'text-amber-500', bg: 'bg-amber-50', trend: 'Fixed', sub: 'Yearly Quota' },
-                                { label: 'Absent Nodes', value: '01 Day', icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-50', trend: '-50%', sub: 'Improvement' },
+                                { label: 'Operational Hours', value: '164.5', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
+                                { label: 'Punctuality Rate', value: '94.2%', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                                { label: 'On-Site Presence', value: '82%', icon: MapPin, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+                                { label: 'Pending Requests', value: '03', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
                             ].map((stat, i) => (
-                                <div key={i} className="bg-white/70 backdrop-blur-md p-10 rounded-[3.5rem] border border-white/50 shadow-sm group hover:shadow-xl transition-all relative overflow-hidden">
-                                    <div className="absolute -right-6 -bottom-6 opacity-[0.03] group-hover:scale-150 transition-transform duration-1000">
-                                        <stat.icon size={160} />
-                                    </div>
-                                    <div className="flex justify-between items-start relative z-10">
-                                        <div className={`w-16 h-16 rounded-[1.8rem] ${stat.bg} flex items-center justify-center ${stat.color} shadow-inner`}>
-                                            <stat.icon size={28} />
+                                <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                                            <stat.icon size={20} />
                                         </div>
-                                        <div className="text-right">
-                                            <span className="text-[10px] font-black text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-widest">{stat.trend}</span>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{stat.sub}</p>
-                                        </div>
+                                        <MoreHorizontal size={18} className="text-slate-300" />
                                     </div>
-                                    <div className="mt-8 relative z-10">
-                                        <h3 className="text-4xl font-black text-slate-800 tracking-tighter">{stat.value}</h3>
-                                        <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">{stat.label}</p>
-                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900">{stat.value}</h3>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{stat.label}</p>
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </div>
 
-                {/* Presence Mesh (Calendar Grid) */}
-                <div className="bg-white/80 backdrop-blur-xl p-12 rounded-[4rem] border border-white/50 shadow-premium overflow-hidden relative">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-                        <div className="space-y-2">
-                            <h2 className="text-4xl font-black text-slate-900 flex items-center gap-4">
-                                <CalendarIcon size={32} className="text-primary" />
-                                Presence Mesh
-                            </h2>
-                            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.4em] ml-12">Visual distribution of work consistency</p>
-                        </div>
-                        <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                            {['Week', 'Month', 'Quarter'].map(opt => (
-                                <button key={opt} className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${opt === 'Month' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'
-                                    }`}>
-                                    {opt}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                        {/* Main Interaction Area */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    <div className="grid grid-cols-7 gap-4">
-                        {[...Array(31)].map((_, i) => (
-                            <div key={i} className="aspect-square bg-slate-50/50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center gap-2 group hover:scale-105 transition-all cursor-pointer hover:bg-white hover:shadow-lg relative overflow-hidden">
-                                <span className="text-[10px] font-black text-slate-300 group-hover:text-primary">{i + 1}</span>
-                                <div className={`w-3 h-3 rounded-full ${i % 7 === 0 ? 'bg-rose-400 group-hover:shadow-[0_0_15px_rgba(251,113,133,0.5)]' :
-                                    i > 24 ? 'bg-slate-200' :
-                                        'bg-emerald-400 group-hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]'
-                                    }`} />
-                                {i === 23 && <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full animate-ping" />}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Logistics Feed (Daily Log) */}
-                <div className="bg-slate-900 rounded-[4.5rem] p-12 shadow-3xl relative overflow-hidden">
-                    <History className="absolute -top-10 -right-10 text-white/5 rotate-12" size={300} />
-
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-16 relative z-10 px-4">
-                        <div className="space-y-2">
-                            <h2 className="text-4xl font-black text-white">Daily Logistics</h2>
-                            <p className="text-indigo-300/50 font-bold text-[10px] uppercase tracking-[0.4em]">Chronological synchronization audit</p>
-                        </div>
-                        <div className="flex gap-4 w-full lg:w-auto">
-                            <div className="relative flex-1 lg:w-80 overflow-hidden rounded-[2rem]">
-                                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-                                <input
-                                    type="text"
-                                    placeholder="Audit by date or unit..."
-                                    className="w-full pl-16 pr-6 py-5 bg-white/5 border border-white/10 rounded-[2rem] text-white outline-none focus:bg-white/10 transition-all font-bold text-sm"
-                                />
-                            </div>
-                            <button className="p-5 bg-white/5 border border-white/10 rounded-[2rem] text-white hover:bg-white/10 transition-all">
-                                <History size={20} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="space-y-6 relative z-10">
-                        {attendanceData.map((log, i) => (
-                            <div key={i} className="group flex flex-col md:flex-row items-center gap-8 bg-white/5 border border-white/5 rounded-[3.5rem] p-8 hover:bg-white/10 transition-all duration-500 hover:scale-[1.01] hover:border-white/20">
-                                <div className="flex flex-col items-center min-w-[120px] bg-white/5 p-6 rounded-[2.5rem] border border-white/5">
-                                    <span className="text-[10px] font-black text-indigo-300 uppercase tracking-widest">{new Date(log.date).toLocaleString('default', { month: 'short' })}</span>
-                                    <span className="text-4xl font-black text-white mt-1">{new Date(log.date).getDate()}</span>
+                            {/* Terminal Entry Card */}
+                            <div className="lg:col-span-1 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center justify-center space-y-8 relative overflow-hidden group">
+                                <div className="text-center">
+                                    <h2 className="text-5xl font-black text-slate-900 tracking-tighter tabular-nums" suppressHydrationWarning>
+                                        {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                    </h2>
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2" suppressHydrationWarning>
+                                        {currentTime.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
+                                    </p>
                                 </div>
 
-                                <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-8">
-                                    <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-indigo-300 opacity-40 uppercase tracking-widest flex items-center gap-2">
-                                            <LogIn size={12} /> Sync Arrival
-                                        </p>
-                                        <p className="text-2xl font-black text-white">{log.checkIn === '-' ? '--:--' : log.checkIn}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-indigo-300 opacity-40 uppercase tracking-widest flex items-center gap-2">
-                                            <LogOut size={12} /> Sync Departure
-                                        </p>
-                                        <p className="text-2xl font-black text-white">{log.checkOut === '-' ? '--:--' : log.checkOut}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-indigo-300 opacity-40 uppercase tracking-widest flex items-center gap-2">
-                                            <Timer size={12} /> Calculation
-                                        </p>
-                                        <p className="text-2xl font-black text-white">{log.hours}</p>
-                                    </div>
-                                    <div className="flex items-center justify-end md:pr-4">
-                                        <StatusBadge status={log.status} />
-                                    </div>
+                                <div className="relative">
+                                    <div className={`absolute inset-0 bg-blue-500/10 rounded-full animate-ping duration-[3s] ${!isCheckedIn ? 'hidden' : ''}`} />
+                                    <button
+                                        onClick={handleShiftAction}
+                                        className={`w-48 h-48 rounded-full flex flex-col items-center justify-center gap-2 transition-all duration-500 shadow-2xl ${isCheckedIn
+                                                ? 'bg-rose-600 text-white shadow-rose-200'
+                                                : 'bg-slate-900 text-white shadow-slate-200'
+                                            }`}
+                                    >
+                                        {isScanning ? (
+                                            <Fingerprint size={48} className="animate-pulse" />
+                                        ) : isCheckedIn ? (
+                                            <>
+                                                <Square size={32} className="fill-current" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest mt-1">Clock Out</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Fingerprint size={48} />
+                                                <span className="text-[10px] font-black uppercase tracking-widest mt-1">Verify Identity</span>
+                                            </>
+                                        )}
+                                    </button>
                                 </div>
 
-                                <div className="hidden lg:block w-px h-16 bg-white/10 mx-4" />
-
-                                <div className="flex items-center gap-5">
-                                    <div className="text-right">
-                                        <p className="text-[10px] font-black text-indigo-300 opacity-40 uppercase tracking-widest">Entry Node</p>
-                                        <p className="text-xs font-bold text-white mt-1">{log.platform}</p>
+                                {isCheckedIn && (
+                                    <div className="text-center">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Duration</p>
+                                        <p className="text-2xl font-black text-blue-600 tracking-tight">{shiftDuration}</p>
                                     </div>
-                                    <button className="w-12 h-12 bg-white/5 rounded-2xl text-white/40 hover:text-white hover:bg-primary transition-all flex items-center justify-center">
-                                        <ChevronRight size={20} />
+                                )}
+                            </div>
+
+                            {/* Attendance Registry Table */}
+                            <div className="lg:col-span-2 bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+                                <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center">
+                                    <div className="flex items-center gap-3">
+                                        <History size={20} className="text-blue-600" />
+                                        <h3 className="text-lg font-bold text-slate-900">Activity Registry</h3>
+                                    </div>
+                                    <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">Download Log</button>
+                                </div>
+                                <div className="flex-1 overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="bg-slate-50/50">
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Entry Date</th>
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Check In</th>
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Check Out</th>
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Hours</th>
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-50">
+                                            {logs.map((log, i) => (
+                                                <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
+                                                    <td className="px-8 py-4 text-xs font-bold text-slate-700">{log.date}</td>
+                                                    <td className="px-8 py-4 text-xs font-bold text-slate-600">{log.checkIn}</td>
+                                                    <td className="px-8 py-4 text-xs font-bold text-slate-600">{log.checkOut}</td>
+                                                    <td className="px-8 py-4 text-xs font-black text-slate-900">{log.hours}</td>
+                                                    <td className="px-8 py-4">
+                                                        <StatusBadge status={log.status} />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Attendance Heatmap */}
+                        <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+                            <div className="flex justify-between items-center mb-6 px-1">
+                                <div className="flex items-center gap-3">
+                                    <Activity size={20} className="text-emerald-500" />
+                                    <h3 className="text-lg font-bold text-slate-900">Operational Heatmap</h3>
+                                </div>
+                                <div className="flex items-center gap-6">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Standard</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Deviation</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-7 md:grid-cols-14 lg:grid-cols-31 gap-2">
+                                {[...Array(31)].map((_, i) => (
+                                    <div key={i} className="aspect-square bg-slate-50 rounded-lg flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-slate-100">
+                                        <span className="text-[9px] font-black text-slate-300 group-hover:text-slate-900">{i + 1}</span>
+                                        <div className={`w-1.5 h-1.5 rounded-full mt-1 ${i % 7 === 0 ? 'bg-rose-500' : 'bg-emerald-500'}`} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    /* Leave Management View */
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {pendingLeaves.map((leave) => (
+                            <div key={leave.id} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col group">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm">
+                                            {leave.name.split(' ').map(n => n[0]).join('')}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-slate-900">{leave.name}</h4>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{leave.role}</p>
+                                        </div>
+                                    </div>
+                                    <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest">{leave.type}</span>
+                                </div>
+                                <div className="p-5 bg-slate-50 rounded-2xl mb-8 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Timeline</span>
+                                        <span className="text-xs font-bold text-slate-900">{leave.start} — {leave.end}</span>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reason</span>
+                                        <p className="text-xs font-semibold text-slate-700 leading-relaxed italic">"{leave.reason}"</p>
+                                    </div>
+                                </div>
+                                <div className="mt-auto grid grid-cols-2 gap-3">
+                                    <button className="py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Deny Access</button>
+                                    <button className="py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2">
+                                        <Check size={14} /> Authorize
                                     </button>
                                 </div>
                             </div>
                         ))}
                     </div>
-                </div>
-
+                )}
             </div>
-
-            <style jsx global>{`
-                @keyframes scan {
-                    0% { transform: translateY(-100%); opacity: 0; }
-                    50% { opacity: 0.5; }
-                    100% { transform: translateY(100%); opacity: 0; }
-                }
-                .scrollbar-hide::-webkit-scrollbar {
-                    display: none;
-                }
-            `}</style>
         </Shell>
     );
 }
+
+const StatusBadge = ({ status }: { status: string }) => {
+    const configs: Record<string, string> = {
+        present: 'bg-emerald-50 text-emerald-600',
+        late: 'bg-amber-50 text-amber-600',
+        absent: 'bg-rose-50 text-rose-600'
+    };
+    return (
+        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${configs[status]}`}>
+            {status}
+        </span>
+    );
+};

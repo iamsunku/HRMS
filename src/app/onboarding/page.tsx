@@ -3,6 +3,7 @@
 import React from 'react';
 import Shell from "@/components/layout/Shell";
 import { UserPlus, ClipboardList, CheckCircle2, Circle, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import styles from './onboarding.module.css';
 
 const onboardingEmployees = [
@@ -50,10 +51,10 @@ export default function OnboardingPage() {
                                         <strong>{emp.date}</strong>
                                     </div>
 
-                                    <button className={styles.actionBtn}>
+                                    <Link href={`/onboarding/${emp.id}`} className={styles.actionBtn}>
                                         <span>Continue</span>
                                         <ArrowRight size={16} />
-                                    </button>
+                                    </Link>
                                 </div>
                             ))}
                         </div>
