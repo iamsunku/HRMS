@@ -12,18 +12,22 @@
 
 .mainContent {
     flex: 1;
-    margin-left: var(--sidebar-width);
+    margin-left: 260px;
+    /* Width of sidebar */
     display: flex;
     flex-direction: column;
     background: #f8fafc;
     min-height: 100vh;
+    padding-top: 70px;
+    /* Offset for fixed header */
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .content {
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 2rem 1.5rem 4rem;
+    /* Increased left padding to 4rem (64px) */
     flex: 1;
     max-width: 100%;
 }

@@ -16,6 +16,8 @@ export default function Shell({ children, title }: ShellProps) {
     return (
         <div className={`${styles.shell} ${isMobileMenuOpen ? styles.menuOpen : ''}`}>
             {/* Mobile Backdrop */}
+
+
             {isMobileMenuOpen && (
                 <div
                     className={styles.backdrop}
@@ -23,16 +25,17 @@ export default function Shell({ children, title }: ShellProps) {
                 />
             )}
 
+            <Header
+                title={title}
+                onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+
             <Sidebar
                 isOpen={isMobileMenuOpen}
                 onClose={() => setIsMobileMenuOpen(false)}
             />
 
             <div className={styles.mainContent}>
-                <Header
-                    title={title}
-                    onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                />
                 <main className={styles.content}>
                     <div className="animate-fade-in">
                         {children}

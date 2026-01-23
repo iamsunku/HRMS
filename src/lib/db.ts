@@ -1,13 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || process.env.DATABASE_URL;
-
-if (!MONGODB_URI) {
-    throw new Error(
-        'Please define the MONGODB_URI or DATABASE_URL environment variable inside .env'
-    );
-}
-
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
@@ -22,6 +14,13 @@ if (!cached) {
 }
 
 async function dbConnect() {
+    const MONGODB_URI = process.env.MONGODB_URI || process.env.DATABASE_URL;
+
+    if (!MONGODB_URI) {
+        throw new Error(
+            'Please define the MONGODB_URI or DATABASE_URL environment variable inside .env'
+        );
+    }
     if (cached.conn) {
         return cached.conn;
     }

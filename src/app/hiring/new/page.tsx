@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Shell from "@/components/layout/Shell";
-import { ArrowLeft, Save, Briefcase, MapPin, DollarSign, Users, Calendar, AlignLeft } from 'lucide-react';
+import { ArrowLeft, Save, Briefcase, MapPin, IndianRupee, Users, Calendar, AlignLeft } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
@@ -66,9 +66,9 @@ export default function CreateJobPage() {
                 <div className="flex items-center justify-between">
                     <button
                         onClick={() => router.back()}
-                        className="group flex items-center text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors"
+                        className="group flex items-center text-sm font-medium text-gray-500 hover:text-violet-600 transition-colors"
                     >
-                        <div className="mr-2 rounded-full p-1 group-hover:bg-blue-50 transition-colors">
+                        <div className="mr-2 rounded-full p-1 group-hover:bg-violet-50 transition-colors">
                             <ArrowLeft className="h-4 w-4" />
                         </div>
                         Back to Jobs
@@ -83,8 +83,8 @@ export default function CreateJobPage() {
                                 <Briefcase className="h-5 w-5" />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-gray-900">Job Details</h2>
-                                <p className="text-sm text-gray-500">Post a new opening to start collecting candidates.</p>
+                                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">New Job Opening</h1>
+                                <p className="text-slate-500 font-medium text-sm">Define the requirements for a new academic or operational role.</p>
                             </div>
                         </div>
                     </div>
@@ -113,10 +113,12 @@ export default function CreateJobPage() {
                                         onChange={handleChange}
                                         options={[
                                             { value: '', label: 'Select Department...' },
-                                            { value: 'Engineering', label: 'Engineering' },
-                                            { value: 'Design', label: 'Design' },
-                                            { value: 'Marketing', label: 'Marketing' },
-                                            { value: 'Sales', label: 'Sales' },
+                                            { value: 'Academics', label: 'Academics' },
+                                            { value: 'Content Development', label: 'Content Development' },
+                                            { value: 'Ai Media', label: 'Ai Media' },
+                                            { value: 'Competitive Exams', label: 'Competitive Exams' },
+                                            { value: 'Leadership', label: 'Leadership' },
+                                            { value: 'Finance', label: 'Finance' },
                                             { value: 'HR', label: 'Human Resources' },
                                         ]}
                                     />
@@ -165,7 +167,7 @@ export default function CreateJobPage() {
                             {/* Budget & Compensation */}
                             <section>
                                 <div className="flex items-center space-x-2 text-purple-900 mb-6">
-                                    <DollarSign className="h-5 w-5 opacity-70" />
+                                    <IndianRupee className="h-5 w-5 opacity-70" />
                                     <h3 className="text-sm font-bold uppercase tracking-wider">Budget & Compensation</h3>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -230,14 +232,14 @@ export default function CreateJobPage() {
                             >
                                 Cancel
                             </Button>
-                            <Button
+                            <button
                                 type="submit"
-                                isLoading={loading}
-                                icon={<Save className="h-4 w-4" />}
-                                className="px-6 bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-200"
+                                disabled={loading}
+                                className="px-10 py-4 bg-violet-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-violet-100 hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] flex items-center gap-3"
                             >
-                                Publish Job
-                            </Button>
+                                <Save size={18} className="stroke-[3]" />
+                                {loading ? 'Processing...' : 'Publish Job'}
+                            </button>
                         </div>
                     </form>
                 </div>

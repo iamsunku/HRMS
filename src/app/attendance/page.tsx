@@ -37,16 +37,16 @@ const INITIAL_LOGS = [
 ];
 
 const MOCK_PENDING_LEAVES = [
-    { id: '1', name: 'Arjun Sharma', role: 'Solutions Architect', type: 'Sick Leave', start: 'Jan 15', end: 'Jan 17', reason: 'Common cold and fatigue' },
-    { id: '2', name: 'Priya Patel', role: 'HR Director', type: 'Annual Leave', start: 'Jan 20', end: 'Jan 25', reason: 'Scheduled family vacation' },
-    { id: '3', name: 'Rahul Vikram', role: 'Systems Lead', type: 'Personal Leave', start: 'Jan 14', end: 'Jan 14', reason: 'Urgent personal administrative work' },
+    { id: '1', name: 'Arjun Sharma', role: 'Physics HOD', type: 'Sick Leave', start: 'Jan 15', end: 'Jan 17', reason: 'Common cold and fatigue' },
+    { id: '2', name: 'Priya Patel', role: 'Academic Dean', type: 'Annual Leave', start: 'Jan 20', end: 'Jan 25', reason: 'Scheduled family vacation' },
+    { id: '3', name: 'Rahul Vikram', role: 'LMS Administrator', type: 'Personal Leave', start: 'Jan 14', end: 'Jan 14', reason: 'Urgent personal administrative work' },
 ];
 
 const EMPLOYEES_DB = [
-    { id: 'EMP-101', name: 'Arjun Sharma', role: 'Solutions Architect' },
-    { id: 'EMP-102', name: 'Priya Patel', role: 'HR Director' },
-    { id: 'EMP-103', name: 'Rahul Vikram', role: 'Systems Lead' },
-    { id: 'EMP-104', name: 'Sneha L.', role: 'Senior UX Designer' },
+    { id: 'EMP-101', name: 'Arjun Sharma', role: 'Physics HOD' },
+    { id: 'EMP-102', name: 'Priya Patel', role: 'Academic Dean' },
+    { id: 'EMP-103', name: 'Rahul Vikram', role: 'LMS Administrator' },
+    { id: 'EMP-104', name: 'Sneha L.', role: 'Digital Content Head' },
 ];
 
 const EMPLOYEE_LOGS: Record<string, typeof INITIAL_LOGS> = {
@@ -56,12 +56,10 @@ const EMPLOYEE_LOGS: Record<string, typeof INITIAL_LOGS> = {
 };
 
 export default function AttendancePage() {
-    const { user } = useUser();
-    const isSuperAdmin = true; // For demonstration
+    const { user, loading } = useUser();
+    const isManagement = ['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'DEPARTMENT_HEAD'].includes(user?.role || '');
 
     const [activeTab, setActiveTab] = useState<'attendance' | 'leaves'>('attendance');
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [isCheckedIn, setIsCheckedIn] = useState(false);
     const [shiftStart, setShiftStart] = useState<Date | null>(null);
@@ -92,6 +90,29 @@ export default function AttendancePage() {
                 setIsCheckedIn(true);
                 setShiftStart(new Date());
             } else {
+                const now = new Date();
+                let durationStr = "0h 0m";
+
+                if (shiftStart) {
+                    const diff = now.getTime() - shiftStart.getTime();
+                    const h = Math.floor(diff / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    durationStr = `${h}h ${m}m`;
+                }
+
+                const newLog = {
+                    id: `LOG-${Date.now()}`,
+                    date: now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
+                    checkIn: shiftStart?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) || '--:--',
+                    checkOut: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
+                    status: 'present',
+                    hours: durationStr,
+                    platform: 'Web Terminal',
+                    location: 'HQ - Terminal A',
+                    lateReason: ''
+                };
+
+                setLogs(prev => [newLog, ...prev]);
                 setIsCheckedIn(false);
                 setShiftStart(null);
                 setShiftDuration("00:00:00");
@@ -100,126 +121,135 @@ export default function AttendancePage() {
         }, 1200);
     };
 
-    return (
-        <Shell title="Attendance Control">
-            <div className="p-4 md:p-8 space-y-8 animate-fade-in max-w-[1400px] mx-auto pb-12">
+    if (loading) return <div className="p-20 text-center text-xs font-black uppercase tracking-widest text-slate-400">Loading Session...</div>;
 
-                {/* Dashboard Tabs */}
-                <div className="flex bg-white/50 p-1 rounded-2xl border border-slate-200 w-fit">
-                    <button
-                        onClick={() => setActiveTab('attendance')}
-                        className={`px-8 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'attendance' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-500 hover:text-slate-800'
-                            }`}
-                    >
-                        Daily Attendance
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('leaves')}
-                        className={`px-8 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'leaves' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-500 hover:text-slate-800'
-                            }`}
-                    >
-                        Leave Management {pendingLeaves.length > 0 && <span className="ml-2 bg-rose-500 text-white px-2 py-0.5 rounded-lg text-[9px]">{pendingLeaves.length}</span>}
-                    </button>
-                </div>
+    return (
+        <Shell title={isManagement ? "Attendance Intelligence" : "My Attendance Hub"}>
+            <div className="px-6 py-4 space-y-6 animate-fade-in max-w-[1400px] mx-auto pb-12">
+
+                {/* Dashboard Tabs - Only for Management */}
+                {isManagement && (
+                    <div className="flex bg-white/50 p-1 rounded-xl border border-slate-200 w-fit">
+                        <button
+                            onClick={() => setActiveTab('attendance')}
+                            className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'attendance' ? 'bg-7c3aed text-white shadow-md' : 'text-slate-500 hover:text-slate-800'
+                                }`}
+                            style={{ backgroundColor: activeTab === 'attendance' ? '#7c3aed' : '' }}
+                        >
+                            Daily Logs Overview
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('leaves')}
+                            className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'leaves' ? 'bg-7c3aed text-white shadow-md' : 'text-slate-500 hover:text-slate-800'
+                                }`}
+                            style={{ backgroundColor: activeTab === 'leaves' ? '#7c3aed' : '' }}
+                        >
+                            Approvals Queue {pendingLeaves.length > 0 && <span className="ml-2 bg-rose-500 text-white px-1.5 py-0.5 rounded text-[8px]">{pendingLeaves.length}</span>}
+                        </button>
+                    </div>
+                )}
 
                 {activeTab === 'attendance' ? (
-                    <div className="space-y-8">
+                    <div className="space-y-6">
                         {/* Executive Stats Row */}
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {[
-                                { label: 'Operational Hours', value: '164.5', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
-                                { label: 'Punctuality Rate', value: '94.2%', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                                { label: 'On-Site Presence', value: '82%', icon: MapPin, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-                                { label: 'Pending Requests', value: '03', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
+                                { label: isManagement ? 'Avg. Instructional Hours' : 'My Weekly Hours', value: '38.5', icon: Clock, color: 'text-violet-600', bg: 'bg-violet-50' },
+                                { label: isManagement ? 'Faculty Punctuality' : 'On-Time Rate', value: '98.2%', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                                { label: 'Active Sessions', value: isManagement ? '124' : '01', icon: MapPin, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+                                { label: 'Discrepancies', value: '00', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
                             ].map((stat, i) => (
-                                <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
-                                            <stat.icon size={20} />
+                                <div key={i} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <div className={`p-2.5 rounded-lg ${stat.bg} ${stat.color}`}>
+                                            <stat.icon size={18} />
                                         </div>
-                                        <MoreHorizontal size={18} className="text-slate-300" />
                                     </div>
-                                    <h3 className="text-2xl font-bold text-slate-900">{stat.value}</h3>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{stat.label}</p>
+                                    <h3 className="text-xl font-bold text-slate-900">{stat.value}</h3>
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{stat.label}</p>
                                 </div>
                             ))}
                         </div>
 
                         {/* Main Interaction Area */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                            {/* Terminal Entry Card */}
-                            <div className="lg:col-span-1 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center justify-center space-y-8 relative overflow-hidden group">
+                            {/* Terminal Entry Card - Personal Punch for everyone */}
+                            <div className="lg:col-span-1 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center space-y-6 relative overflow-hidden group">
                                 <div className="text-center">
-                                    <h2 className="text-5xl font-black text-slate-900 tracking-tighter tabular-nums" suppressHydrationWarning>
+                                    <h2 className="text-4xl font-black text-slate-900 tracking-tighter tabular-nums" suppressHydrationWarning>
                                         {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                                     </h2>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2" suppressHydrationWarning>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1" suppressHydrationWarning>
                                         {currentTime.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
                                     </p>
                                 </div>
 
                                 <div className="relative">
-                                    <div className={`absolute inset-0 bg-blue-500/10 rounded-full animate-ping duration-[3s] ${!isCheckedIn ? 'hidden' : ''}`} />
+                                    <div className={`absolute inset-0 bg-violet-500/10 rounded-full animate-ping duration-[3s] pointer-events-none ${!isCheckedIn ? 'hidden' : ''}`} />
                                     <button
                                         onClick={handleShiftAction}
-                                        className={`w-48 h-48 rounded-full flex flex-col items-center justify-center gap-2 transition-all duration-500 shadow-2xl ${isCheckedIn
-                                                ? 'bg-rose-600 text-white shadow-rose-200'
-                                                : 'bg-slate-900 text-white shadow-slate-200'
+                                        className={`w-40 h-40 rounded-full flex flex-col items-center justify-center gap-1 transition-all duration-500 shadow-2xl ${isCheckedIn
+                                            ? 'bg-rose-600 text-white shadow-rose-200'
+                                            : 'bg-7c3aed text-white shadow-violet-200'
                                             }`}
+                                        style={{ backgroundColor: isCheckedIn ? '#e11d48' : '#7c3aed' }}
                                     >
                                         {isScanning ? (
-                                            <Fingerprint size={48} className="animate-pulse" />
+                                            <Fingerprint size={40} className="animate-pulse" />
                                         ) : isCheckedIn ? (
                                             <>
-                                                <Square size={32} className="fill-current" />
-                                                <span className="text-[10px] font-black uppercase tracking-widest mt-1">Clock Out</span>
+                                                <Square size={28} className="fill-current" />
+                                                <span className="text-[9px] font-black uppercase tracking-widest">Punch Out</span>
                                             </>
                                         ) : (
                                             <>
-                                                <Fingerprint size={48} />
-                                                <span className="text-[10px] font-black uppercase tracking-widest mt-1">Verify Identity</span>
+                                                <Fingerprint size={40} />
+                                                <span className="text-[9px] font-black uppercase tracking-widest">Punch In</span>
                                             </>
                                         )}
                                     </button>
                                 </div>
 
-                                {isCheckedIn && (
-                                    <div className="text-center">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Duration</p>
-                                        <p className="text-2xl font-black text-blue-600 tracking-tight">{shiftDuration}</p>
-                                    </div>
-                                )}
+                                <div className="text-center">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{isCheckedIn ? 'Session Time' : 'Last Punch Out: 06:12 PM'}</p>
+                                    {isCheckedIn && <p className="text-xl font-black text-violet-600 tracking-tight">{shiftDuration}</p>}
+                                </div>
                             </div>
 
                             {/* Attendance Registry Table */}
-                            <div className="lg:col-span-2 bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-                                <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center">
+                            <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+                                <div className="px-6 py-4 border-b border-slate-50 flex justify-between items-center">
                                     <div className="flex items-center gap-3">
-                                        <History size={20} className="text-blue-600" />
-                                        <h3 className="text-lg font-bold text-slate-900">Activity Registry</h3>
+                                        <History size={18} className="text-violet-600" />
+                                        <h3 className="text-base font-bold text-slate-900">{isManagement ? "Organizational Logs" : "Personal Attendance Log"}</h3>
                                     </div>
-                                    <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">Download Log</button>
+                                    <button className="text-[9px] font-black text-violet-600 uppercase tracking-widest hover:underline">Download Report</button>
                                 </div>
                                 <div className="flex-1 overflow-x-auto">
                                     <table className="w-full text-left">
                                         <thead>
                                             <tr className="bg-slate-50/50">
-                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Entry Date</th>
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">{isManagement ? "Staff Member" : "Entry Date"}</th>
                                                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Check In</th>
                                                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Check Out</th>
                                                 <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Hours</th>
-                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
                                             {logs.map((log, i) => (
                                                 <tr key={i} className="group hover:bg-slate-50/50 transition-colors">
-                                                    <td className="px-8 py-4 text-xs font-bold text-slate-700">{log.date}</td>
-                                                    <td className="px-8 py-4 text-xs font-bold text-slate-600">{log.checkIn}</td>
-                                                    <td className="px-8 py-4 text-xs font-bold text-slate-600">{log.checkOut}</td>
-                                                    <td className="px-8 py-4 text-xs font-black text-slate-900">{log.hours}</td>
-                                                    <td className="px-8 py-4">
+                                                    <td className="px-6 py-3">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-black text-slate-900">{isManagement ? "Arjun Sharma" : log.date}</span>
+                                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{isManagement ? 'EMP-101' : 'Verified'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-3 text-[11px] font-bold text-slate-600">{log.checkIn}</td>
+                                                    <td className="px-6 py-3 text-[11px] font-bold text-slate-600">{log.checkOut}</td>
+                                                    <td className="px-6 py-3 text-[11px] font-black text-slate-900">{log.hours}</td>
+                                                    <td className="px-6 py-3 text-right">
                                                         <StatusBadge status={log.status} />
                                                     </td>
                                                 </tr>
@@ -230,65 +260,55 @@ export default function AttendancePage() {
                             </div>
                         </div>
 
-                        {/* Attendance Heatmap */}
-                        <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                            <div className="flex justify-between items-center mb-6 px-1">
+                        {/* Personal Heatmap */}
+                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <div className="flex justify-between items-center mb-4 px-1">
                                 <div className="flex items-center gap-3">
-                                    <Activity size={20} className="text-emerald-500" />
-                                    <h3 className="text-lg font-bold text-slate-900">Operational Heatmap</h3>
-                                </div>
-                                <div className="flex items-center gap-6">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Standard</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Deviation</span>
-                                    </div>
+                                    <Activity size={18} className="text-emerald-500" />
+                                    <h3 className="text-base font-bold text-slate-900">Personal Consistency Map</h3>
                                 </div>
                             </div>
                             <div className="grid grid-cols-7 md:grid-cols-14 lg:grid-cols-31 gap-2">
                                 {[...Array(31)].map((_, i) => (
-                                    <div key={i} className="aspect-square bg-slate-50 rounded-lg flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-slate-100">
+                                    <div key={i} className="aspect-square bg-slate-50 rounded-lg flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-slate-100 cursor-help">
                                         <span className="text-[9px] font-black text-slate-300 group-hover:text-slate-900">{i + 1}</span>
-                                        <div className={`w-1.5 h-1.5 rounded-full mt-1 ${i % 7 === 0 ? 'bg-rose-500' : 'bg-emerald-500'}`} />
+                                        <div className={`w-1.5 h-1.5 rounded-full mt-1 ${i % 7 === 0 || i % 7 === 6 ? 'bg-slate-200' : 'bg-emerald-500'}`} title={i % 7 === 0 || i % 7 === 6 ? 'Weekend' : 'Present'} />
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
                 ) : (
-                    /* Leave Management View */
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    /* Leave Approvals View - Only for Management Roles */
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-2">
                         {pendingLeaves.map((leave) => (
-                            <div key={leave.id} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col group">
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm">
+                            <div key={leave.id} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col group">
+                                <div className="flex justify-between items-start mb-5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-black text-xs">
                                             {leave.name.split(' ').map(n => n[0]).join('')}
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900">{leave.name}</h4>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{leave.role}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm">{leave.name}</h4>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{leave.role}</p>
                                         </div>
                                     </div>
-                                    <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest">{leave.type}</span>
+                                    <span className="px-2.5 py-1 bg-amber-50 text-amber-600 rounded text-[8px] font-black uppercase tracking-widest">{leave.type}</span>
                                 </div>
-                                <div className="p-5 bg-slate-50 rounded-2xl mb-8 space-y-4">
+                                <div className="p-4 bg-slate-50 rounded-xl mb-6 space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Timeline</span>
-                                        <span className="text-xs font-bold text-slate-900">{leave.start} — {leave.end}</span>
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Timeline</span>
+                                        <span className="text-[11px] font-bold text-slate-900">{leave.start} — {leave.end}</span>
                                     </div>
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reason</span>
-                                        <p className="text-xs font-semibold text-slate-700 leading-relaxed italic">"{leave.reason}"</p>
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Reason</span>
+                                        <p className="text-[11px] font-semibold text-slate-700 leading-relaxed italic">"{leave.reason}"</p>
                                     </div>
                                 </div>
-                                <div className="mt-auto grid grid-cols-2 gap-3">
-                                    <button className="py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Deny Access</button>
-                                    <button className="py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center gap-2">
-                                        <Check size={14} /> Authorize
+                                <div className="mt-auto grid grid-cols-2 gap-2">
+                                    <button className="py-2.5 bg-white border border-slate-200 text-slate-600 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Reject</button>
+                                    <button className="py-2.5 bg-indigo-600 text-white rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 hover:bg-indigo-700">
+                                        <Check size={12} /> Approve
                                     </button>
                                 </div>
                             </div>

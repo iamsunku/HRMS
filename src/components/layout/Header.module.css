@@ -4,15 +4,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
-    margin: 1.5rem 2rem 0.5rem 2rem;
-    border-radius: 1rem;
-    position: sticky;
-    top: 1.5rem;
-    z-index: 90;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
+    padding: 0 1.5rem;
+    margin: 0;
+    width: 100%;
+    position: fixed;
+    /* Fixed at top */
+    top: 0;
+    left: 0;
+    z-index: 100;
+    /* Above sidebar */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .menuTrigger {
@@ -71,16 +73,16 @@
     gap: 0.75rem;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    padding: 0.5rem 1.25rem;
+    padding: 0.5rem 1rem;
     border-radius: 0.75rem;
-    width: 320px;
+    width: 280px;
     color: #94a3b8;
     transition: all 0.3s ease;
 }
 
 .searchBar:focus-within {
     background: #ffffff;
-    border-color: #3b82f6;
+    border-color: #8b5cf6;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -96,7 +98,7 @@
 .actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .iconBtn {
@@ -210,7 +212,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #1e3a8a;
+    color: #4c1d95;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
 }
@@ -322,14 +324,14 @@
 }
 
 .reportBtn {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%) !important;
     color: white !important;
     border-radius: 100px !important;
     padding: 0.75rem 1.25rem !important;
     display: flex !important;
     align-items: center !important;
     gap: 0.75rem !important;
-    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2) !important;
+    box-shadow: 0 4px 15px rgba(76, 29, 149, 0.2) !important;
     border: none !important;
     cursor: pointer !important;
 }
@@ -397,7 +399,7 @@
     width: 64px;
     height: 64px;
     border-radius: 24px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -405,7 +407,7 @@
     font-size: 1.5rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
-    box-shadow: 0 10px 20px rgba(30, 58, 138, 0.2);
+    box-shadow: 0 10px 20px rgba(76, 29, 149, 0.2);
 }
 
 .dropdownName {

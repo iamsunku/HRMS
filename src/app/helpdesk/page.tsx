@@ -21,15 +21,21 @@ import {
 import styles from './helpdesk.module.css';
 
 const initialTickets = [
-    { id: 'TKT-2041', title: 'Laptop screen flickering', category: 'Hardware', priority: 'High', status: 'In Progress', requester: 'Arjun Sharma', date: '2 hours ago' },
-    { id: 'TKT-2038', title: 'VPN connection issues', category: 'Network', priority: 'Medium', status: 'Open', requester: 'Priya Patel', date: '5 hours ago' },
-    { id: 'TKT-2035', title: 'Adobe License Renewal', category: 'Software', priority: 'Low', status: 'Resolved', requester: 'Rahul Vikram', date: '1 day ago' },
-    { id: 'TKT-2030', title: 'Security patch update failure', category: 'Security', priority: 'Urgent', status: 'In Progress', requester: 'Sneha L.', date: '2 days ago' },
+    { id: 'TKT-2041', title: 'LMS Quiz auto-submission issue', category: 'LMS Support', priority: 'High', status: 'In Progress', requester: 'Arjun Sharma', date: '2 hours ago' },
+    { id: 'TKT-2038', title: 'Student portal access error', category: 'Technical', priority: 'Medium', status: 'Open', requester: 'Priya Patel', date: '5 hours ago' },
+    { id: 'TKT-2035', title: 'Chemistry Virtual Lab extension', category: 'Software', priority: 'Low', status: 'Resolved', requester: 'Rahul Vikram', date: '1 day ago' },
+    { id: 'TKT-2030', title: 'Academic data privacy query', category: 'Security', priority: 'Urgent', status: 'In Progress', requester: 'Sneha L.', date: '2 days ago' },
 ];
 
+import { useUser } from '@/hooks/useUser';
+
 export default function HelpdeskPage() {
+    const { user, loading } = useUser();
+    const isManagement = ['SUPER_ADMIN', 'ADMIN', 'HR_MANAGER', 'DEPARTMENT_HEAD'].includes(user?.role || '');
+
     const [tickets, setTickets] = useState(initialTickets);
-    const [activeTab, setActiveTab] = useState('all');
+    // Default to 'my' for employees, 'all' for management
+    const [activeTab, setActiveTab] = useState(isManagement ? 'all' : 'my');
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeActionId, setActiveActionId] = useState<string | null>(null);
@@ -37,17 +43,19 @@ export default function HelpdeskPage() {
     // Form State
     const [newTicket, setNewTicket] = useState({
         title: '',
-        category: 'Software',
+        category: 'LMS Support',
         priority: 'Medium',
-        requester: 'Admin'
+        requester: `${user?.firstName} ${user?.lastName}`
     });
+
+
 
     // Filtering
     const filteredTickets = useMemo(() => {
         return tickets.filter(t => {
             const matchesTab =
                 activeTab === 'all' ||
-                (activeTab === 'my' && t.requester === 'Admin') ||
+                (activeTab === 'my' && t.requester === `${user?.firstName} ${user?.lastName}`) ||
                 (activeTab === 'unassigned' && t.status === 'Open');
 
             const matchesSearch =
@@ -57,7 +65,7 @@ export default function HelpdeskPage() {
 
             return matchesTab && matchesSearch;
         });
-    }, [tickets, activeTab, searchQuery]);
+    }, [tickets, activeTab, searchQuery, user]);
 
     // Handlers
     const handleRaiseTicket = () => {
@@ -70,7 +78,10 @@ export default function HelpdeskPage() {
         };
         setTickets([ticket, ...tickets]);
         setIsModalOpen(false);
-        setNewTicket({ title: '', category: 'Software', priority: 'Medium', requester: 'Admin' });
+        setNewTicket({
+            title: '', category: 'LMS Support', priority: 'Medium', requester: `${user?.firstName} ${user?.lastName}`
+        });
+        setActiveTab('my');
     };
 
     const handleDelete = (id: string) => {
@@ -86,35 +97,35 @@ export default function HelpdeskPage() {
     };
 
     return (
-        <Shell title="IT Helpdesk & Ticketing">
+        <Shell title={isManagement ? "Organizational Support Queue" : "Personal Support & Guidance"}>
             <div className={styles.container}>
                 {/* Statistics */}
                 <div className={styles.topSummary}>
                     <div className={styles.summaryCard}>
-                        <div className={styles.summaryIcon} style={{ background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>
-                            <TicketCheck size={24} />
+                        <div className={styles.summaryIcon} style={{ background: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed' }}>
+                            <TicketCheck size={20} />
                         </div>
                         <div className={styles.summaryInfo}>
-                            <span>All Active</span>
-                            <h3>{tickets.filter(t => t.status !== 'Resolved').length}</h3>
+                            <span>{isManagement ? "All Active Tickets" : "My Active Tasks"}</span>
+                            <h3>{filteredTickets.filter(t => t.status !== 'Resolved').length}</h3>
                         </div>
                     </div>
                     <div className={styles.summaryCard}>
                         <div className={styles.summaryIcon} style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)' }}>
-                            <Clock size={24} />
+                            <Clock size={20} />
                         </div>
                         <div className={styles.summaryInfo}>
-                            <span>Avg. Response</span>
+                            <span>{isManagement ? "Avg. Response" : "Estimated Wait"}</span>
                             <h3>4.2 hrs</h3>
                         </div>
                     </div>
                     <div className={styles.summaryCard}>
                         <div className={styles.summaryIcon} style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)' }}>
-                            <CheckCircle2 size={24} />
+                            <CheckCircle2 size={20} />
                         </div>
                         <div className={styles.summaryInfo}>
-                            <span>Resolved</span>
-                            <h3>{tickets.filter(t => t.status === 'Resolved').length}</h3>
+                            <span>Resolved Cases</span>
+                            <h3>{filteredTickets.filter(t => t.status === 'Resolved').length}</h3>
                         </div>
                     </div>
                 </div>
@@ -122,29 +133,33 @@ export default function HelpdeskPage() {
                 {/* Filters & Actions */}
                 <div className={styles.actionHeader}>
                     <div className={styles.tabs}>
-                        {['all', 'my', 'unassigned'].map(tab => (
-                            <button
-                                key={tab}
-                                className={activeTab === tab ? styles.activeTab : ''}
-                                onClick={() => setActiveTab(tab)}
-                            >
-                                {tab === 'all' ? 'All Tickets' : tab === 'my' ? 'My Requests' : 'Unassigned'}
-                            </button>
-                        ))}
+                        {isManagement ? (
+                            ['all', 'unassigned'].map(tab => (
+                                <button
+                                    key={tab}
+                                    className={activeTab === tab ? styles.activeTab : ''}
+                                    onClick={() => setActiveTab(tab)}
+                                >
+                                    {tab === 'all' ? 'Institutional Queue' : 'Unassigned'}
+                                </button>
+                            ))
+                        ) : (
+                            <button className={styles.activeTab}>My Requests History</button>
+                        )}
                     </div>
                     <div className={styles.rightActions}>
                         <div className={styles.search}>
                             <Search size={18} />
                             <input
                                 type="text"
-                                placeholder="Search tickets..."
+                                placeholder="Search identification..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                         <button className={styles.primaryBtn} onClick={() => setIsModalOpen(true)}>
                             <Plus size={18} />
-                            <span>Raise Ticket</span>
+                            <span>Identify New Issue</span>
                         </button>
                     </div>
                 </div>
@@ -155,13 +170,13 @@ export default function HelpdeskPage() {
                         <table className={styles.table}>
                             <thead>
                                 <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Subject</th>
-                                    <th>Category</th>
-                                    <th>Priority</th>
-                                    <th>Requester</th>
-                                    <th>Status</th>
-                                    <th style={{ textAlign: 'right' }}>Action</th>
+                                    <th>Ref ID</th>
+                                    <th>Subject Matter</th>
+                                    <th>Categorization</th>
+                                    <th>Priority Index</th>
+                                    {isManagement && <th>Stakeholder</th>}
+                                    <th>Fulfillment</th>
+                                    <th style={{ textAlign: 'right' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -171,15 +186,11 @@ export default function HelpdeskPage() {
                                         <td>
                                             <div className={styles.tktInfo}>
                                                 <strong>{tkt.title}</strong>
-                                                <span>Raised {tkt.date}</span>
+                                                <span>Initialized {tkt.date}</span>
                                             </div>
                                         </td>
                                         <td>
                                             <div className={styles.categoryBadge}>
-                                                {tkt.category === 'Hardware' && <Monitor size={14} />}
-                                                {tkt.category === 'Network' && <Wifi size={14} />}
-                                                {tkt.category === 'Security' && <ShieldAlert size={14} />}
-                                                {tkt.category === 'Software' && <MessageSquare size={14} />}
                                                 <span>{tkt.category}</span>
                                             </div>
                                         </td>
@@ -188,7 +199,7 @@ export default function HelpdeskPage() {
                                                 {tkt.priority}
                                             </span>
                                         </td>
-                                        <td>{tkt.requester}</td>
+                                        {isManagement && <td>{tkt.requester}</td>}
                                         <td>
                                             <span className={`${styles.statusBadge} ${styles[tkt.status.toLowerCase().replace(' ', '')]}`}>
                                                 {tkt.status}
@@ -204,13 +215,13 @@ export default function HelpdeskPage() {
 
                                             {activeActionId === tkt.id && (
                                                 <div className={styles.actionMenu}>
-                                                    {tkt.status !== 'Resolved' && (
+                                                    {isManagement && tkt.status !== 'Resolved' && (
                                                         <button className={`${styles.menuItem} ${styles.resolveItem}`} onClick={() => handleResolve(tkt.id)}>
-                                                            <CheckCircle size={14} /> Resolve
+                                                            <CheckCircle size={14} /> Resolve Case
                                                         </button>
                                                     )}
                                                     <button className={`${styles.menuItem} ${styles.deleteItem}`} onClick={() => handleDelete(tkt.id)}>
-                                                        <Trash2 size={14} /> Delete
+                                                        <Trash2 size={14} /> Remove Ref
                                                     </button>
                                                 </div>
                                             )}
@@ -219,8 +230,8 @@ export default function HelpdeskPage() {
                                 ))}
                                 {filteredTickets.length === 0 && (
                                     <tr>
-                                        <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
-                                            No tickets found matching your criteria.
+                                        <td colSpan={7} style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zero Pending Support Records Found</p>
                                         </td>
                                     </tr>
                                 )}
@@ -235,49 +246,49 @@ export default function HelpdeskPage() {
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <div className={styles.modalHeader}>
-                            <h3>Raise New Ticket</h3>
+                            <h3>Protocol Assistance Request</h3>
                             <button className={styles.closeBtn} onClick={() => setIsModalOpen(false)}>
                                 <X size={20} />
                             </button>
                         </div>
                         <div className={styles.modalBody}>
                             <div className={styles.formGroup}>
-                                <label>Subject / Issue</label>
+                                <label>Issue Description</label>
                                 <input
                                     type="text"
-                                    placeholder="Briefly describe the issue..."
+                                    placeholder="Enter subject for verification..."
                                     value={newTicket.title}
                                     onChange={(e) => setNewTicket({ ...newTicket, title: e.target.value })}
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Category</label>
+                                <label>Categorization</label>
                                 <select
                                     value={newTicket.category}
                                     onChange={(e) => setNewTicket({ ...newTicket, category: e.target.value })}
                                 >
-                                    <option value="Software">Software</option>
-                                    <option value="Hardware">Hardware</option>
-                                    <option value="Network">Network</option>
-                                    <option value="Security">Security</option>
+                                    <option value="LMS Support">Academic Platform (LMS)</option>
+                                    <option value="Pedagogy">Instructional Guidance</option>
+                                    <option value="Technical">Hardware/Identity</option>
+                                    <option value="Security">Access/Privacy</option>
                                 </select>
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Priority</label>
+                                <label>Operational Priority</label>
                                 <select
                                     value={newTicket.priority}
                                     onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value })}
                                 >
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
-                                    <option value="Urgent">Urgent</option>
+                                    <option value="Low">Standard (Low)</option>
+                                    <option value="Medium">Routine (Medium)</option>
+                                    <option value="High">Critical (High)</option>
+                                    <option value="Urgent">Emergency (Urgent)</option>
                                 </select>
                             </div>
                         </div>
                         <div className={styles.modalFooter}>
-                            <button className={styles.secondaryBtn} onClick={() => setIsModalOpen(false)}>Cancel</button>
-                            <button className={styles.primaryBtn} onClick={handleRaiseTicket}>Create Ticket</button>
+                            <button className={styles.secondaryBtn} onClick={() => setIsModalOpen(false)}>Cancel Protocol</button>
+                            <button className={styles.primaryBtn} onClick={handleRaiseTicket}>Authorize Request</button>
                         </div>
                     </div>
                 </div>

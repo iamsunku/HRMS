@@ -27,36 +27,36 @@ export default function ReportsPage() {
 
     const reportCategories = [
         {
-            title: 'Workforce Intelligence',
-            description: 'Attrition & Demographics',
+            title: 'Faculty Analytics',
+            description: 'Retention & Profiles',
             icon: Users,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50',
-            reports: ['Monthly Attrition Logic', 'Departmental Load Balance', 'Diversity Index']
+            color: 'text-violet-600',
+            bg: 'bg-violet-50',
+            reports: ['Faculty Retention Logic', 'Departmental Load Balance', 'Academic Subject Diversity']
         },
         {
-            title: 'Financial Oversight',
-            description: 'Disbursement & Compliance',
+            title: 'Institutional Finance',
+            description: 'Compensation & Grants',
             icon: IndianRupee,
             color: 'text-emerald-600',
             bg: 'bg-emerald-50',
-            reports: ['Salary Variance Audit', 'TDS & Compliance Digest', 'Project Budget Burn Hub']
+            reports: ['Compensation Variance Audit', 'Academic Grant Disbursement', 'Course Budget Utilization']
         },
         {
-            title: 'Performance Registry',
-            description: 'KPI & Talent Mapping',
+            title: 'Excellence Registry',
+            description: 'Learning Outcomes & Talent',
             icon: TrendingUp,
             color: 'text-purple-600',
             bg: 'bg-purple-50',
-            reports: ['Elite Performer Registry', 'Unit Velocity Audit', 'KPI Fulfillment Matrix']
+            reports: ['Top Faculty Registry', 'Departmental Efficacy Audit', 'Learning Outcome Matrix']
         },
         {
-            title: 'Logistics Protocol',
-            description: 'Attendance & Presence',
+            title: 'Session Management',
+            description: 'Lectures & Attendance',
             icon: Clock,
             color: 'text-amber-600',
             bg: 'bg-amber-50',
-            reports: ['Overtime Cycle Analysis', 'Leave Liability Protocol', 'Presence Accuracy Log']
+            reports: ['Instructional Hours Analysis', 'Sabbatical Tracking Protocol', 'Lecture Presence Accuracy']
         }
     ];
 
@@ -68,9 +68,9 @@ export default function ReportsPage() {
                         <ShieldCheck size={40} />
                     </div>
                     <div className="max-w-md space-y-2">
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Access Protocol Denied</h2>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Access Restricted</h2>
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                            Clearance level insufficient for Central Intelligence Repository.
+                            Permissions restricted for Institutional Analytics Hub.
                         </p>
                     </div>
                     <button
@@ -85,14 +85,14 @@ export default function ReportsPage() {
     }
 
     return (
-        <Shell title="Intelligence Hub">
+        <Shell title="Academic Analytics Hub">
             <div className="p-4 md:p-8 space-y-6 animate-fade-in max-w-[1400px] mx-auto pb-20">
 
                 {/* Tactical Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">System Audit & Reports</h1>
-                        <p className="text-slate-500 font-medium text-sm mt-1">Centralized repository for organizational logic and analytics.</p>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Institutional Performance Reports</h1>
+                        <p className="text-slate-500 font-medium text-sm mt-1">Centralized repository for academic insights and institutional analytics.</p>
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
@@ -100,7 +100,7 @@ export default function ReportsPage() {
                             <input
                                 type="text"
                                 placeholder="Search reports..."
-                                className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold outline-none focus:ring-4 focus:ring-blue-50 transition-all"
+                                className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold outline-none focus:ring-4 focus:ring-violet-50 transition-all"
                             />
                         </div>
                         <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all">
@@ -114,17 +114,17 @@ export default function ReportsPage() {
                     <div className="relative z-10 max-w-2xl space-y-6">
                         <div className="space-y-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Restricted Access</span>
-                                <div className="h-px w-12 bg-blue-400/30" />
+                                <span className="text-[10px] font-black text-violet-400 uppercase tracking-[0.2em]">Restricted Academic Data</span>
+                                <div className="h-px w-12 bg-violet-400/30" />
                             </div>
-                            <h2 className="text-3xl md:text-4xl font-black tracking-tight leading-none">Intelligence Command</h2>
+                            <h2 className="text-3xl md:text-4xl font-black tracking-tight leading-none">Academic Command Center</h2>
                             <p className="text-indigo-200/80 text-sm font-medium leading-relaxed max-w-lg">
-                                Real-time algorithmic analysis of workforce dynamics, fiscal velocity, and operational efficiency.
+                                Real-time algorithmic analysis of faculty performance, course fiscal health, and learning efficacy.
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-4">
-                            <button className="px-6 py-3 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg flex items-center gap-2 hover:bg-blue-50 transition-all">
-                                <Zap size={14} className="text-blue-600 fill-blue-600" />
+                            <button className="px-6 py-3 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg flex items-center gap-2 hover:bg-violet-50 transition-all">
+                                <Zap size={14} className="text-violet-600 fill-violet-600" />
                                 Run Audit
                             </button>
                             <button className="px-6 py-3 bg-white/10 text-white border border-white/10 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/20 transition-all">

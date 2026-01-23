@@ -32,16 +32,16 @@ export default function PerformancePage() {
     const [searchQuery, setSearchQuery] = useState("");
 
     const performanceMetrics = [
-        { label: 'Avg Efficiency', value: '88.4%', trend: '+4.2%', icon: Target, color: 'text-blue-600', bg: 'bg-blue-50' },
-        { label: 'Logic Mastery', value: 'Level 8', trend: 'Elite', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-50' },
-        { label: 'Team Synergy', value: 'High', trend: '+12%', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-        { label: 'Growth Velocity', value: '1.2x', trend: 'Accelerating', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' },
+        { label: 'Teaching Efficiency', value: '88.4%', trend: '+4.2%', icon: Target, color: 'text-violet-600', bg: 'bg-violet-50' },
+        { label: 'Subject Expertise', value: 'Level 8', trend: 'Expert', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-50' },
+        { label: 'Dept Collaboration', value: 'High', trend: '+12%', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { label: 'Student Success', value: '92%', trend: 'Accelerating', icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' },
     ];
 
     const employees = [
-        { name: 'Arjun Sharma', role: 'Full Stack Architect', score: 94, status: 'EXCEEDING', lastReview: '2025-12-10' },
-        { name: 'Priya Patel', role: 'Product Lead', score: 89, status: 'EXPECTED', lastReview: '2025-11-20' },
-        { name: 'Rahul Vikram', role: 'Staff Engineer', score: 91, status: 'EXCEEDING', lastReview: '2025-12-01' },
+        { name: 'Arjun Sharma', role: 'Physics HOD', score: 94, status: 'EXCEEDING', lastReview: '2025-12-10' },
+        { name: 'Priya Patel', role: 'Academic Dean', score: 89, status: 'EXPECTED', lastReview: '2025-11-20' },
+        { name: 'Rahul Vikram', role: 'LMS Administrator', score: 91, status: 'EXCEEDING', lastReview: '2025-12-01' },
     ];
 
     const filteredEmployees = employees.filter(emp =>
@@ -50,7 +50,7 @@ export default function PerformancePage() {
     );
 
     return (
-        <Shell title="Performance Intelligence">
+        <Shell title="Academic Excellence Matrix">
             <div className="space-y-6 md:space-y-6 max-w-[1400px] mx-auto pb-10 md:pb-12 px-4 md:px-0">
 
                 {/* Header Actions */}
@@ -97,8 +97,8 @@ export default function PerformancePage() {
                                     <Flame size={18} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-slate-900 leading-none">Talent Leaderboard</h3>
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">High-throughput contributors</p>
+                                    <h3 className="text-lg font-black text-slate-900 leading-none">Faculty Excellence Leaderboard</h3>
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Top performing educators & staff</p>
                                 </div>
                             </div>
                             <div className="w-full md:w-auto">
@@ -135,11 +135,11 @@ export default function PerformancePage() {
                                     <div className="flex flex-row sm:flex-col items-center gap-6 sm:gap-0 self-center sm:self-auto">
                                         <div className="flex flex-col items-center">
                                             <span className="text-lg font-black text-slate-900">{emp.score}</span>
-                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">K-Score</span>
+                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Academic Score</span>
                                         </div>
 
                                         <div className="flex items-center gap-4 sm:hidden">
-                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${emp.status === 'EXCEEDING' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100'
+                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${emp.status === 'EXCEEDING' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-violet-50 text-violet-600 border-violet-100'
                                                 }`}>
                                                 {emp.status}
                                             </span>
@@ -151,7 +151,7 @@ export default function PerformancePage() {
 
                                     <div className="hidden sm:flex items-center gap-8">
                                         <div className="text-right">
-                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${emp.status === 'EXCEEDING' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-blue-50 text-blue-600 border-blue-100'
+                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${emp.status === 'EXCEEDING' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-violet-50 text-violet-600 border-violet-100'
                                                 }`}>
                                                 {emp.status}
                                             </span>
@@ -205,7 +205,7 @@ export default function PerformancePage() {
                                         <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" className="w-full h-full object-cover" />
                                     </div>
                                 ))}
-                                <div className="w-8 h-8 rounded-full border-2 border-white bg-primary text-white flex items-center justify-center text-[8px] font-black shadow-sm">
+                                <div className="w-8 h-8 rounded-full border-2 border-white bg-violet-600 text-white flex items-center justify-center text-[8px] font-black shadow-sm">
                                     +12
                                 </div>
                             </div>
@@ -218,7 +218,7 @@ export default function PerformancePage() {
 
                 {/* Performance Detail Overlay - High Density Pro View */}
                 {selectedEmployee && (
-                    <div className="fixed inset-0 lg:left-[270px] z-[5000] bg-[#f8fafc] overflow-y-auto animate-in fade-in duration-300">
+                    <div className="fixed inset-0 z-[5000] bg-[#f8fafc] overflow-y-auto animate-in fade-in duration-300">
                         {/* Compact Content Container */}
                         <div className="min-h-full flex flex-col items-stretch">
                             {/* Pro Header - Ultra Compact */}
@@ -278,10 +278,10 @@ export default function PerformancePage() {
                                     {/* Ultra Compact Stats Row */}
                                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                                         {[
-                                            { label: 'Efficiency Index', value: '94.2%', icon: Target, color: 'text-blue-500', trend: '+2.4%' },
+                                            { label: 'Efficiency Index', value: '94.2%', icon: Target, color: 'text-violet-500', trend: '+2.4%' },
                                             { label: 'Throughput Node', value: '1.4x', icon: Zap, color: 'text-amber-500', trend: 'STABLE' },
                                             { label: 'Synergy Level', value: '98/100', icon: Users, color: 'text-emerald-500', trend: '+12%' },
-                                            { label: 'Reliability Node', value: 'ELITE', icon: Shield, color: 'text-purple-500', trend: 'v9.4' },
+                                            { label: 'Reliability Node', value: 'ELITE', icon: Shield, color: 'text-indigo-500', trend: 'v9.4' },
                                         ].map((stat, i) => (
                                             <div key={i} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4 group">
                                                 <div className={`shrink-0 w-10 h-10 rounded-lg bg-slate-50 ${stat.color} flex items-center justify-center group-hover:bg-white group-hover:shadow-soft transition-all`}>
@@ -300,18 +300,18 @@ export default function PerformancePage() {
                                         <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
                                             <div className="flex justify-between items-center">
                                                 <div>
-                                                    <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Technical Capability Node</h4>
-                                                    <p className="text-slate-400 font-bold text-[8px] uppercase tracking-widest mt-0.5">Quarterly Verification Grid</p>
+                                                    <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Academic Competency Profile</h4>
+                                                    <p className="text-slate-400 font-bold text-[8px] uppercase tracking-widest mt-0.5">Quarterly Faculty Verification</p>
                                                 </div>
                                                 <BarChart3 size={16} className="text-slate-300" />
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                                                 {[
-                                                    { label: 'Architecture Scalability', score: 92, color: 'bg-blue-600' },
-                                                    { label: 'Global Security Integrity', score: 98, color: 'bg-emerald-500' },
-                                                    { label: 'Logic Complexity Mastery', score: 85, color: 'bg-amber-500' },
-                                                    { label: 'Strategic Collaboration', score: 95, color: 'bg-slate-900' }
+                                                    { label: 'Curriculum Design', score: 92, color: 'bg-violet-600' },
+                                                    { label: 'Educational Leadership', score: 98, color: 'bg-emerald-500' },
+                                                    { label: 'Pedagogical Innovation', score: 85, color: 'bg-amber-500' },
+                                                    { label: 'Student Engagement', score: 95, color: 'bg-slate-900' }
                                                 ].map((vector, i) => (
                                                     <div key={i} className="space-y-2">
                                                         <div className="flex justify-between items-center">
@@ -337,10 +337,10 @@ export default function PerformancePage() {
                                                     <h4 className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mb-4">Operations Hub</h4>
                                                     <div className="space-y-2">
                                                         <button className="w-full py-2.5 bg-white text-slate-900 rounded-lg font-black text-[9px] uppercase tracking-widest shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-                                                            <Download size={12} /> Personnel Audit
+                                                            <Download size={12} /> Academic Audit
                                                         </button>
                                                         <button className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2">
-                                                            <PieChart size={12} /> Synergy Node
+                                                            <PieChart size={12} /> Course Synergy
                                                         </button>
                                                     </div>
                                                 </div>
@@ -361,14 +361,14 @@ export default function PerformancePage() {
                                     {/* Evolution Path Trace */}
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Historical Evolution Trace</h4>
+                                            <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Professional Development History</h4>
                                             <div className="h-px flex-1 bg-slate-100 mx-4" />
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             {[
-                                                { title: 'Project K-9 Lead', date: 'DEC 2025', type: 'STRATEGY' },
-                                                { title: 'Protocol V4 Auth', date: 'OCT 2025', type: 'TECHNICAL' },
-                                                { title: 'Synergy Catalyst', date: 'AUG 2025', type: 'LEADERSHIP' }
+                                                { title: 'Advanced Pedagogy Certification', date: 'DEC 2025', type: 'CERT' },
+                                                { title: 'Physics Curriculum Lead', date: 'OCT 2025', type: 'LEADERSHIP' },
+                                                { title: 'Digital Content Excellence', date: 'AUG 2025', type: 'INNOVATION' }
                                             ].map((ms, i) => (
                                                 <div key={i} className="bg-white px-4 py-3 rounded-xl border border-slate-100 hover:border-primary/20 transition-all flex items-center justify-between group">
                                                     <div className="min-w-0">
