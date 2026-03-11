@@ -17,7 +17,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 )}
                 <div className="relative group">
                     {leftIcon && (
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-violet-600 transition-colors">
                             {leftIcon}
                         </div>
                     )}
@@ -27,7 +27,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                             transition-all duration-300 transform
                             ${leftIcon ? 'pl-12' : ''}
                             placeholder:text-slate-400
-                            focus:border-blue-600 focus:ring-8 focus:ring-blue-600/5 focus:shadow-xl focus:translate-y-[-1px] focus:bg-white
+                            focus:border-violet-600 focus:ring-8 focus:ring-violet-600/5 focus:shadow-xl focus:translate-y-[-1px] focus:bg-white
                             disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500
                             ${error ? 'border-red-500 focus:ring-red-500/10' : ''}
                             ${className}

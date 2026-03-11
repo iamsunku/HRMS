@@ -20,9 +20,9 @@ interface Employee {
 }
 
 const MOCK_EMPLOYEES: Employee[] = [
-    { _id: '1', firstName: 'Rahul', lastName: 'Vikram', email: 'rahul.v@kiccpa.com', employeeCode: 'ID-482-91', designation: 'Systems Lead', department: 'Engineering', status: 'ACTIVE', joiningDate: '2023-01-15' },
-    { _id: '2', firstName: 'Priya', lastName: 'Patel', email: 'priya.p@kiccpa.com', employeeCode: 'ID-482-02', designation: 'HR Director', department: 'Operations', status: 'ACTIVE', joiningDate: '2023-02-10' },
-    { _id: '3', firstName: 'Sneha', lastName: 'L.', email: 'sneha.l@kiccpa.com', employeeCode: 'ID-482-15', designation: 'Senior UX Architect', department: 'Design', status: 'ACTIVE', joiningDate: '2023-03-05' },
+    { _id: '1', firstName: 'Rahul', lastName: 'Vikram', email: 'rahul.v@edutech.com', employeeCode: 'FAC-482-91', designation: 'Physics HOD', department: 'Academics', status: 'ACTIVE', joiningDate: '2023-01-15' },
+    { _id: '2', firstName: 'Priya', lastName: 'Patel', email: 'priya.p@edutech.com', employeeCode: 'ADM-482-02', designation: 'Academic Dean', department: 'Leadership', status: 'ACTIVE', joiningDate: '2023-02-10' },
+    { _id: '3', firstName: 'Sneha', lastName: 'L.', email: 'sneha.l@edutech.com', employeeCode: 'DIG-482-15', designation: 'Digital Content Head', department: 'Ai Media', status: 'ACTIVE', joiningDate: '2023-03-05' },
 ];
 
 export default function EmployeesPage() {
@@ -43,13 +43,24 @@ export default function EmployeesPage() {
             try {
                 setLoading(true);
                 const res = await fetch(`/api/employees?page=${page}&limit=${limit}`);
-                const data = await res.json();
-                if (data.success) {
-                    setEmployees(data.data);
-                    setTotal(data.meta?.total ?? data.data.length);
-                    setTotalPages(data.meta?.totalPages ?? 1);
-                } else throw new Error();
+
+                // Check if response is OK and is JSON
+                const contentType = res.headers.get("content-type");
+                if (res.ok && contentType && contentType.includes("application/json")) {
+                    const data = await res.json();
+                    if (data.success) {
+                        setEmployees(data.data);
+                        setTotal(data.meta?.total ?? data.data.length);
+                        setTotalPages(data.meta?.totalPages ?? 1);
+                        setUsingMockData(false);
+                    } else {
+                        throw new Error('API reported failure');
+                    }
+                } else {
+                    throw new Error('Invalid response format or network error');
+                }
             } catch (err) {
+                console.warn('Network/API unavailable, switching to simulation mode.');
                 setEmployees(MOCK_EMPLOYEES);
                 setUsingMockData(true);
                 setTotal(MOCK_EMPLOYEES.length);
@@ -62,22 +73,22 @@ export default function EmployeesPage() {
     }, [page]);
 
     return (
-        <Shell title="Personnel Repository">
+        <Shell title="Employee Directory">
             <div className="p-4 md:p-8 space-y-8 animate-fade-in max-w-[1400px] mx-auto pb-12">
 
                 {/* Tactical Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Active Personnel</h1>
-                        <p className="text-slate-500 font-medium text-sm mt-1">Authorized workforce directory & resource allocation.</p>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Active Employees</h1>
+                        <p className="text-slate-500 font-medium text-sm mt-1">Official directory of all company personnel and staff members.</p>
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
                         <div className="relative flex-1 md:w-80">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                             <input
                                 type="text"
-                                placeholder="Search personnel..."
-                                className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm font-medium focus:ring-4 focus:ring-blue-50 transition-all outline-none"
+                                placeholder="Search employees..."
+                                className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm font-medium focus:ring-4 focus:ring-violet-50 transition-all outline-none"
                             />
                         </div>
                         <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 transition-all">
@@ -91,7 +102,7 @@ export default function EmployeesPage() {
                     <div className="bg-slate-900 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden group">
                         <div className="relative z-10 flex justify-between items-center">
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2">Total Personnel</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-2">Total Staff</p>
                                 <h3 className="text-4xl font-black">{total}</h3>
                                 <p className="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">+4 This Quarter</p>
                             </div>
@@ -105,14 +116,14 @@ export default function EmployeesPage() {
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Resource Utilization</p>
                             <h3 className="text-3xl font-bold text-slate-900">84.2%</h3>
                             <div className="h-1.5 w-32 bg-slate-100 rounded-full mt-3 overflow-hidden">
-                                <div className="h-full bg-blue-600 w-[84%]" />
+                                <div className="h-full bg-violet-600 w-[84%]" />
                             </div>
                         </div>
-                        <ShieldCheck size={40} className="text-blue-600/20" />
+                        <ShieldCheck size={40} className="text-violet-600/20" />
                     </div>
                     <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
                         <div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Regional Hubs</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Study Centers</p>
                             <h3 className="text-3xl font-bold text-slate-900">03</h3>
                             <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-wide italic">Verified Locations</p>
                         </div>
@@ -174,8 +185,8 @@ export default function EmployeesPage() {
                                 <UserPlus size={32} />
                             </div>
                             <div className="text-center">
-                                <p className="text-sm font-bold text-slate-900">Commission Personnel</p>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Expand Resource Capacity</p>
+                                <p className="text-sm font-bold text-slate-900">Onboard New Educator</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Scale Academic Capacity</p>
                             </div>
                         </button>
                     )}
@@ -190,15 +201,15 @@ export default function EmployeesPage() {
                             onClick={() => setPage(p => p - 1)}
                             className="px-6 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-all"
                         >
-                            Previous Node
+                            Previous Page
                         </button>
-                        <span className="text-xs font-black text-slate-900">Tier {page} of {totalPages}</span>
+                        <span className="text-xs font-black text-slate-900">Page {page} of {totalPages}</span>
                         <button
                             disabled={page >= totalPages}
                             onClick={() => setPage(p => p + 1)}
                             className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-blue-600 disabled:opacity-50 transition-all"
                         >
-                            Next Node
+                            Next Page
                         </button>
                     </div>
                 </div>

@@ -123,8 +123,8 @@ export default function AssetsPage() {
                                 key={t}
                                 onClick={() => setFilter(t)}
                                 className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${filter === t
-                                        ? 'bg-blue-50 text-blue-700 shadow-sm'
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                    ? 'bg-violet-50 text-violet-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                                     }`}
                             >
                                 {t === 'All' ? 'All Assets' : t}

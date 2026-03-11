@@ -1,30 +1,30 @@
 .container {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.25rem;
 }
 
 .topSummary {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
 }
 
 .summaryCard {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: var(--radius);
-    padding: 1.5rem;
+    border-radius: 16px;
+    padding: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .summaryIcon {
-    width: 54px;
-    height: 54px;
-    border-radius: 14px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,7 +39,7 @@
 }
 
 .summaryInfo h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #0f172a;
 }
@@ -48,14 +48,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .tabs {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.25rem;
     overflow-x: auto;
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 }
 
 .tabs::-webkit-scrollbar {
@@ -76,17 +76,17 @@
 }
 
 .tabs button.activeTab {
-    color: #3b82f6;
+    color: #7c3aed;
 }
 
 .tabs button.activeTab::after {
     content: '';
     position: absolute;
-    bottom: -4px;
+    bottom: -2px;
     left: 0;
     width: 100%;
     height: 2px;
-    background: #3b82f6;
+    background: #7c3aed;
 }
 
 .rightActions {
@@ -109,10 +109,10 @@
 .search input {
     background: none;
     border: none;
-    height: 48px;
+    height: 40px;
     color: #0f172a;
     width: 100%;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     outline: none;
     font-weight: 500;
 }
@@ -150,20 +150,30 @@
 }
 
 .primaryBtn {
-    background: #1e3a8a;
+    background: #7c3aed;
     color: #fff;
-    padding: 0.75rem 1.25rem;
+    padding: 0.625rem 1rem;
     border-radius: 10px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.primaryBtn:hover {
+    background: #6d28d9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
 }
 
 .tableCard {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
@@ -174,19 +184,19 @@
 }
 
 .table th {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.25rem;
     text-align: left;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #64748b;
+    color: #94a3b8;
     background: #f8fafc;
     border-bottom: 2px solid #f1f5f9;
 }
 
 .table td {
-    padding: 1.25rem 1.5rem;
-    font-size: 0.875rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.8125rem;
     border-bottom: 1px solid #f1f5f9;
     color: #0f172a;
 }
@@ -233,8 +243,8 @@
 }
 
 .priorityBadge.medium {
-    background: rgba(79, 70, 229, 0.1);
-    color: var(--primary);
+    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
 }
 
 .priorityBadge.low {
@@ -246,9 +256,9 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
-    padding: 0.25rem 0.75rem;
+    padding: 0.125rem 0.625rem;
     border-radius: 100px;
     width: fit-content;
 }
@@ -259,8 +269,8 @@
 }
 
 .statusBadge.inprogress {
-    background: rgba(79, 70, 229, 0.1);
-    color: var(--primary);
+    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
 }
 
 .statusBadge.resolved {
@@ -303,7 +313,7 @@
 }
 
 .modalHeader {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid #f1f5f9;
     display: flex;
     justify-content: space-between;
@@ -312,7 +322,7 @@
 
 .modalHeader h3 {
     margin: 0 !important;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
 }
 
@@ -325,10 +335,10 @@
 }
 
 .modalBody {
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .formGroup {
@@ -338,45 +348,54 @@
 }
 
 .formGroup label {
-    font-size: 0.75rem;
+    font-size: 0.675rem;
     font-weight: 700;
-    color: #64748b;
+    color: #94a3b8;
     text-transform: uppercase;
+    letter-spacing: 0.025em;
 }
 
 .formGroup input,
 .formGroup select,
 .formGroup textarea {
-    padding: 0.75rem 1rem;
+    padding: 0.625rem 0.875rem;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 0.875rem;
+    border-radius: 8px;
+    font-size: 0.8125rem;
     outline: none;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
 }
 
 .formGroup input:focus,
 .formGroup select:focus,
 .formGroup textarea:focus {
-    border-color: #3b82f6;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .modalFooter {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     background: #f8fafc;
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .secondaryBtn {
     background: white;
     border: 1px solid #e2e8f0;
-    padding: 0.75rem 1.25rem;
-    border-radius: 10px;
+    padding: 0.625rem 1rem;
+    border-radius: 8px;
     font-weight: 600;
+    font-size: 0.8125rem;
     color: #64748b;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.secondaryBtn:hover {
+    background: #f8fafc;
+    color: #0f172a;
 }
 
 /* Action Menu */

@@ -7,9 +7,9 @@ import Link from 'next/link';
 import styles from './onboarding.module.css';
 
 const onboardingEmployees = [
-    { id: 1, name: 'Amit Kumar', role: 'Frontend Engineer', stage: 'Document Verification', progress: 45, date: 'Oct 30, 2024' },
-    { id: 2, name: 'Sara Ali', role: 'Business Analyst', stage: 'Asset Allocation', progress: 75, date: 'Nov 02, 2024' },
-    { id: 3, name: 'Kevin Durant', role: 'Cloud Architect', stage: 'IT Setup', progress: 20, date: 'Oct 28, 2024' },
+    { id: 1, name: 'Amit Kumar', role: 'Physics Faculty', stage: 'Academic Briefing', progress: 45, date: 'Jan 25, 2026' },
+    { id: 2, name: 'Sara Ali', role: 'Academic Coordinator', stage: 'LMS Training', progress: 75, date: 'Jan 28, 2026' },
+    { id: 3, name: 'Kevin Durant', role: 'Subject Matter Expert', stage: 'Content Verification', progress: 20, date: 'Feb 01, 2026' },
 ];
 
 export default function OnboardingPage() {
@@ -20,7 +20,7 @@ export default function OnboardingPage() {
                     <div className={styles.mainContent}>
                         <div className={styles.sectionHeader}>
                             <h2>Active Onboarding</h2>
-                            <span>{onboardingEmployees.length} candidates in pipeline</span>
+                            <span>{onboardingEmployees.length} personnel in onboarding phase</span>
                         </div>
 
                         <div className={styles.employeeList}>
@@ -62,27 +62,27 @@ export default function OnboardingPage() {
 
                     <div className={styles.sidebar}>
                         <div className={styles.checklistCard}>
-                            <h3>Orientation Checklist</h3>
+                            <h3>Academic Induction Checklist</h3>
                             <div className={styles.checklist}>
                                 <div className={styles.checkItem}>
                                     <CheckCircle2 size={18} color="var(--success)" />
-                                    <span>Welcome Email Sent</span>
+                                    <span>Welcome Kit & Syllabus Sent</span>
                                 </div>
                                 <div className={styles.checkItem}>
                                     <CheckCircle2 size={18} color="var(--success)" />
-                                    <span>Document Collection</span>
+                                    <span>Credential Verification</span>
                                 </div>
                                 <div className={styles.checkItem}>
                                     <Circle size={18} opacity="0.3" />
-                                    <span>Asset Assignment</span>
+                                    <span>LMS Access Setup</span>
                                 </div>
                                 <div className={styles.checkItem}>
                                     <Circle size={18} opacity="0.3" />
-                                    <span>IT Access Provisioning</span>
+                                    <span>Course Material Allocation</span>
                                 </div>
                                 <div className={styles.checkItem}>
                                     <Circle size={18} opacity="0.3" />
-                                    <span>Manager Introduction</span>
+                                    <span>Dean's Introduction Session</span>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@ export default function OnboardingPage() {
                                 <strong>88%</strong>
                             </div>
                             <div className={styles.statLine}>
-                                <span>Avg. Onboarding Time</span>
+                                <span>Avg. Induction Time</span>
                                 <strong>4.5 Days</strong>
                             </div>
                         </div>

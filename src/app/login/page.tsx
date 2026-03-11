@@ -106,7 +106,7 @@ export default function LoginPage() {
                             <button
                                 type="button"
                                 onClick={handleStartRecovery}
-                                className="group flex items-center gap-1.5 text-[10px] font-black text-blue-600 hover:text-blue-800 transition-all uppercase tracking-widest"
+                                className="group flex items-center gap-1.5 text-[10px] font-black text-violet-600 hover:text-violet-800 transition-all uppercase tracking-widest"
                             >
                                 <Fingerprint size={12} className="group-hover:animate-pulse" />
                                 Secure Identity Recovery?
@@ -117,7 +117,7 @@ export default function LoginPage() {
 
                 <Button
                     type="submit"
-                    className="w-full py-4 text-sm font-bold uppercase tracking-widest shadow-xl shadow-blue-500/20"
+                    className="w-full py-4 text-sm font-bold uppercase tracking-widest shadow-xl shadow-violet-500/20"
                     size="lg"
                     isLoading={loading}
                     icon={<LogIn size={18} />}
@@ -137,7 +137,7 @@ export default function LoginPage() {
                         </div>
 
                         <div className="p-10">
-                            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
+                            <div className="w-16 h-16 bg-violet-50 rounded-2xl flex items-center justify-center text-violet-600 mb-6">
                                 <ShieldCheck size={32} />
                             </div>
 
@@ -180,7 +180,7 @@ export default function LoginPage() {
                                                 key={i}
                                                 type="text"
                                                 maxLength={1}
-                                                className="w-full aspect-square text-center font-bold text-xl rounded-xl border-2 border-slate-100 focus:border-blue-500 outline-none transition-all"
+                                                className="w-full aspect-square text-center font-bold text-xl rounded-xl border-2 border-slate-100 focus:border-violet-500 outline-none transition-all"
                                             />
                                         ))}
                                     </div>
@@ -190,7 +190,7 @@ export default function LoginPage() {
                                     </Button>
 
                                     <button
-                                        className="w-full text-center text-xs font-bold text-slate-400 hover:text-blue-500 transition-colors uppercase tracking-widest"
+                                        className="w-full text-center text-xs font-bold text-slate-400 hover:text-violet-500 transition-colors uppercase tracking-widest"
                                         onClick={() => setRecoveryStep(1)}
                                     >
                                         Resend Key

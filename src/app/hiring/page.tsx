@@ -13,16 +13,16 @@ import {
 import Link from 'next/link';
 
 const stats = [
-    { label: 'Active Opportunities', value: '12', trend: '+2 this month', icon: Briefcase, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Talent Pipeline', value: '148', trend: '12 new today', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Resource Allocation', value: '₹4.5 Cr', trend: '85% utilized', icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Active Openings', value: '12', trend: '+2 this month', icon: Briefcase, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { label: 'Faculty Pipeline', value: '148', trend: '12 new today', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Recruitment Budget', value: '₹4.5 Cr', trend: '85% utilized', icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
 ];
 
 const MOCK_JOBS = [
-    { _id: '1', title: 'Senior Full Stack Developer', department: 'Engineering', location: 'Bangalore', type: 'Full-time', status: 'ACTIVE', candidates: 12, budget: '25-35 LPA', manager: 'Rahul Vikram', iconColor: 'bg-blue-600', posted: '2 days ago' },
-    { _id: '2', title: 'Product UI/UX Designer', department: 'Design', location: 'Remote', type: 'Full-time', status: 'ACTIVE', candidates: 8, budget: '18-24 LPA', manager: 'Sneha L.', iconColor: 'bg-indigo-600', posted: '5 days ago' },
-    { _id: '3', title: 'HR Manager', department: 'Operations', location: 'Mumbai', type: 'Full-time', status: 'DRAFT', candidates: 0, budget: '12-18 LPA', manager: 'Priya Patel', iconColor: 'bg-slate-600', posted: '1 week ago' },
-    { _id: '4', title: 'Growth Marketer', department: 'Marketing', location: 'Delhi', type: 'Contract', status: 'URGENT', candidates: 45, budget: '15-20 LPA', manager: 'Vikram Seth', iconColor: 'bg-amber-600', posted: '3 days ago' },
+    { _id: '1', title: 'Senior Physics Faculty', department: 'Academics', location: 'Bangalore', type: 'Full-time', status: 'ACTIVE', candidates: 12, budget: '25-35 LPA', manager: 'Rahul Vikram', iconColor: 'bg-violet-600', posted: '2 days ago' },
+    { _id: '2', title: 'Subject Matter Expert (Maths)', department: 'Content Development', location: 'Remote', type: 'Full-time', status: 'ACTIVE', candidates: 8, budget: '18-24 LPA', manager: 'Sneha L.', iconColor: 'bg-indigo-600', posted: '5 days ago' },
+    { _id: '3', title: 'Academic Coordinator', department: 'Leadership', location: 'Mumbai', type: 'Full-time', status: 'DRAFT', candidates: 0, budget: '12-18 LPA', manager: 'Priya Patel', iconColor: 'bg-slate-600', posted: '1 week ago' },
+    { _id: '4', title: 'Enrollment Manager', department: 'Competitive Exams', location: 'Delhi', type: 'Contract', status: 'URGENT', candidates: 45, budget: '15-20 LPA', manager: 'Vikram Seth', iconColor: 'bg-amber-600', posted: '3 days ago' },
 ];
 
 export default function HiringPage() {
@@ -37,14 +37,21 @@ export default function HiringPage() {
         const fetchJobs = async () => {
             try {
                 const res = await fetch('/api/jobs');
-                const data = await res.json();
-                if (data.success) {
-                    setJobs(data.data);
-                    setUsingMockData(false);
+                const contentType = res.headers.get("content-type");
+
+                if (res.ok && contentType && contentType.includes("application/json")) {
+                    const data = await res.json();
+                    if (data.success) {
+                        setJobs(data.data);
+                        setUsingMockData(false);
+                    } else {
+                        throw new Error(data.error);
+                    }
                 } else {
-                    throw new Error(data.error);
+                    throw new Error('Invalid response format');
                 }
             } catch (err) {
+                console.warn('Job API unavailable, utilizing simulation protocol.');
                 setJobs(MOCK_JOBS);
                 setUsingMockData(true);
             } finally {
@@ -62,29 +69,32 @@ export default function HiringPage() {
     });
 
     return (
-        <Shell title="Recruitment Strategy">
+        <Shell title="Hiring Hub">
             <div className="p-4 md:p-8 space-y-6 animate-fade-in max-w-[1400px] mx-auto pb-20">
 
                 {/* Executive Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Talent Acquisition</span>
-                            <div className="w-1 h-1 rounded-full bg-blue-600" />
-                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Active Operations</span>
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hiring Operations</span>
+                            <div className="w-1 h-1 rounded-full bg-violet-600" />
+                            <span className="text-[10px] font-black text-violet-600 uppercase tracking-widest">Central Recruitment</span>
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Hiring Console</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Job Openings</h2>
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
-                        <button className="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2">
+                        <button
+                            onClick={() => alert('Generating Talent Analytics Report...')}
+                            className="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center gap-2"
+                        >
                             <FileText size={16} /> Analytics Report
                         </button>
-                        <button
-                            onClick={() => router.push('/hiring/new')}
-                            className="flex-1 md:flex-none px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 active:scale-95"
+                        <Link
+                            href="/hiring/new"
+                            className="flex-1 md:flex-none px-6 py-2.5 bg-violet-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-violet-200 hover:bg-violet-700 transition-all flex items-center justify-center gap-2 active:scale-95 relative z-10"
                         >
-                            <Plus size={16} /> Create Opportunity
-                        </button>
+                            <Plus size={16} /> New Job Opening
+                        </Link>
                     </div>
                 </div>
 
@@ -94,7 +104,7 @@ export default function HiringPage() {
                         <div key={index} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm group hover:shadow-md transition-all flex items-center justify-between">
                             <div>
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                                <h3 className="text-2xl font-bold text-slate-900">{stat.label === 'Active Opportunities' ? jobs.length : stat.value}</h3>
+                                <h3 className="text-2xl font-bold text-slate-900">{stat.label === 'Active Openings' ? jobs.length : stat.value}</h3>
                             </div>
                             <div className="flex flex-col items-end gap-2">
                                 <div className={`p-2.5 rounded-xl ${stat.bg} ${stat.color} shadow-inner`}>
@@ -109,13 +119,13 @@ export default function HiringPage() {
                 {/* Operational Controls */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/50 p-2 rounded-2xl backdrop-blur-sm border border-white/20 shadow-sm">
                     <div className="relative flex-1 w-full md:max-w-md group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={16} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-violet-600 transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Search roles or units..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-4 focus:ring-blue-500/5 transition-all text-slate-700 placeholder:font-medium"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-4 focus:ring-violet-500/5 transition-all text-slate-700 placeholder:font-medium"
                         />
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto">
@@ -181,12 +191,12 @@ export default function HiringPage() {
                                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Apps</span>
                                             </div>
                                         </div>
-                                        <button
-                                            onClick={() => router.push(`/hiring/${job._id || job.id}`)}
+                                        <Link
+                                            href={`/hiring/${job._id || job.id}`}
                                             className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all"
                                         >
                                             <ArrowRight size={14} />
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             ))

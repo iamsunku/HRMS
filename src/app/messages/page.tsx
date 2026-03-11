@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './Messages.module.css';
-import Header from '@/components/layout/Header';
+import Shell from "@/components/layout/Shell";
 
 interface Message {
     id: string;
@@ -211,9 +211,7 @@ export default function MessagesPage() {
     );
 
     return (
-        <div className="min-h-screen bg-[#f8fafc]">
-            <Header title="Communications" />
-
+        <Shell title="Communications">
             <main className={`${styles.container} ${selectedConv ? styles.showChat : ''}`}>
                 {/* Sidebar */}
                 <aside className={styles.sidebar}>
@@ -388,7 +386,7 @@ export default function MessagesPage() {
                                                 <div className="relative" ref={emojiPickerRef}>
                                                     <button
                                                         type="button"
-                                                        className={`${styles.attachBtn} ${showEmojiPicker ? 'text-blue-500' : ''}`}
+                                                        className={`${styles.attachBtn} ${showEmojiPicker ? 'text-violet-600' : ''}`}
                                                         title="Emoji & Stickers"
                                                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                                                     >
@@ -574,6 +572,6 @@ export default function MessagesPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </Shell>
     );
 }

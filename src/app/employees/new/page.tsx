@@ -1,267 +1,291 @@
-'use client';
+// "use client" ensures client-side rendering for the form
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Shell from "@/components/layout/Shell";
-import { ArrowLeft, Save, User, Briefcase, Calendar, CreditCard, Mail, Phone, Users } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
-import { Button } from '@/components/ui/Button';
+import React, { useState } from "react";
+import { useUser } from "@/hooks/useUser";
+import styles from "./employees.module.css";
 
-export default function AddEmployeePage() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+// Premium, glass‑morphic form for adding a new employee
+export default function NewEmployeePage() {
+    const { user, loading } = useUser();
+    const isAuthorized = ["HR_MANAGER", "SUPER_ADMIN"].includes(user?.role ?? "");
 
-    const [formData, setFormData] = useState({
-        employeeCode: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        departmentId: '',
-        designation: '',
-        joiningDate: '',
-        gender: 'MALE',
-        employmentType: 'FULL_TIME',
-        currentSalary: '',
-        status: 'ACTIVE',
-    });
+    // Basic employee info
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
 
-    const [departments, setDepartments] = useState<{ _id: string, name: string }[]>([]);
+    // Document uploads – stored as File objects (multiple where needed)
+    const [aadharFile, setAadharFile] = useState<File | null>(null);
+    const [panFile, setPanFile] = useState<File | null>(null);
+    const [marksFiles, setMarksFiles] = useState<File[]>([]);
+    const [idFile, setIdFile] = useState<File | null>(null); // passport / voter‑id
+    const [experienceFile, setExperienceFile] = useState<File | null>(null);
 
-    useEffect(() => {
-        const fetchDepts = async () => {
-            try {
-                const res = await fetch('/api/departments');
-                const data = await res.json();
-                if (data.success) {
-                    setDepartments(data.data);
-                }
-            } catch (err) {
-                console.error('Failed to fetch departments:', err);
-            }
-        };
-        fetchDepts();
-    }, []);
+    // Bank details
+    const [bankAccount, setBankAccount] = useState("");
+    const [bankName, setBankName] = useState("");
+    const [ifsc, setIfsc] = useState("");
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+    // Additional employee info
+    const [mobile, setMobile] = useState("");
+    const [dob, setDob] = useState("");
+    const [gender, setGender] = useState("");
+    const [currentAddress, setCurrentAddress] = useState("");
+    const [sameAsCurrent, setSameAsCurrent] = useState(false);
+    const [permanentAddress, setPermanentAddress] = useState("");
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
+    const [qualification, setQualification] = useState("");
+    const [college, setCollege] = useState("");
+    const [yearOfPassing, setYearOfPassing] = useState("");
+    const [employmentType, setEmploymentType] = useState("");
+    const [yearsExperience, setYearsExperience] = useState("");
+    const [previousCompanies, setPreviousCompanies] = useState("");
+    const [accountHolder, setAccountHolder] = useState("");
+    const [emergencyName, setEmergencyName] = useState("");
+    const [emergencyNumber, setEmergencyNumber] = useState("");
+    const [emergencyRelation, setEmergencyRelation] = useState("");
+    const [bloodGroup, setBloodGroup] = useState("");
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    // Simple submit – in a real app this would POST to an API
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        setError('');
-
-        try {
-            const res = await fetch('/api/employees', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await res.json();
-
-            if (!data.success) {
-                throw new Error(data.error || 'Failed to create employee');
-            }
-
-            router.push('/employees');
-            router.refresh();
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
+        const payload = {
+            firstName,
+            lastName,
+            email,
+            mobile,
+            dob,
+            gender,
+            currentAddress,
+            permanentAddress: sameAsCurrent ? currentAddress : permanentAddress,
+            documents: {
+                aadhar: aadharFile?.name ?? "",
+                pan: panFile?.name ?? "",
+                marksCards: marksFiles.map(f => f.name),
+                idProof: idFile?.name ?? "",
+                experienceLetter: experienceFile?.name ?? "",
+                photo: photoFile?.name ?? "",
+            },
+            education: {
+                qualification,
+                college,
+                yearOfPassing,
+                marksCards: marksFiles.map(f => f.name),
+            },
+            employment: {
+                employmentType,
+                yearsExperience: employmentType === 'Fresher' ? "N/A" : yearsExperience,
+                previousCompanies: employmentType === 'Fresher' ? "N/A" : previousCompanies,
+                experienceLetter: experienceFile?.name ?? "",
+            },
+            bankDetails: { bankAccount, bankName, ifsc, accountHolder },
+            emergencyContact: {
+                name: emergencyName,
+                number: emergencyNumber,
+                relation: emergencyRelation,
+                bloodGroup,
+            },
+        };
+        console.log("🧾 New employee payload:", payload);
+        alert("Employee data logged to console – replace with real API call.");
     };
+
+    // Render loading state first – after all hooks have been declared
+    if (loading) {
+        return (
+            <div className="p-20 text-center text-xs font-black uppercase tracking-widest text-slate-400">
+                Loading user data…
+            </div>
+        );
+    }
+
+    // Unauthorized view
+    if (!isAuthorized) {
+        return (
+            <div className={styles.unauth}>🚫 You do not have permission to add employees.</div>
+        );
+    }
 
     return (
-        <Shell title="Add New Employee">
-            <div className="max-w-5xl mx-auto space-y-6">
-                <div className="flex items-center justify-between">
-                    <button
-                        onClick={() => router.back()}
-                        className="group flex items-center text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors"
-                    >
-                        <div className="mr-2 rounded-full p-1 group-hover:bg-blue-50 transition-colors">
-                            <ArrowLeft className="h-4 w-4" />
-                        </div>
-                        Back to Directory
-                    </button>
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    {/* Header */}
-                    <div className="px-8 py-6 border-b border-gray-100 bg-gray-50/50">
-                        <div className="flex items-center space-x-3">
-                            <div className="h-10 w-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
-                                <Users className="h-5 w-5" />
-                            </div>
-                            <div>
-                                <h2 className="text-lg font-bold text-gray-900">Employee Details</h2>
-                                <p className="text-sm text-gray-500">Enter the personal and professional details of the new employee.</p>
-                            </div>
-                        </div>
+        <section className={styles.container}>
+            <h1 className={styles.title}>Add New Employee</h1>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                {/* 1️⃣ Basic Personal Information */}
+                <div className={styles.sectionHeader}>Basic Personal Information</div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>First Name</label>
+                        <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required />
                     </div>
-
-                    <form onSubmit={handleSubmit} className="p-8">
-                        {error && (
-                            <div className="mb-8 bg-red-50 text-red-700 p-4 rounded-xl text-sm border border-red-100 flex items-center">
-                                <span className="mr-2">⚠️</span> {error}
-                            </div>
-                        )}
-
-                        <div className="space-y-10">
-                            {/* Personal Information */}
-                            <section>
-                                <div className="flex items-center space-x-2 text-blue-900 mb-6">
-                                    <User className="h-5 w-5 opacity-70" />
-                                    <h3 className="text-sm font-bold uppercase tracking-wider">Personal Information</h3>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                                    <Input
-                                        label="First Name *"
-                                        name="firstName"
-                                        required
-                                        placeholder="e.g. John"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                    />
-                                    <Input
-                                        label="Last Name *"
-                                        name="lastName"
-                                        required
-                                        placeholder="e.g. Doe"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                    />
-                                    <Input
-                                        label="Email Address *"
-                                        name="email"
-                                        type="email"
-                                        required
-                                        placeholder="john.doe@company.com"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                    />
-                                    <Input
-                                        label="Employee ID *"
-                                        name="employeeCode"
-                                        required
-                                        placeholder="e.g. EMP001"
-                                        value={formData.employeeCode}
-                                        onChange={handleChange}
-                                    />
-                                    <Input
-                                        label="Phone Number"
-                                        name="phone"
-                                        type="tel"
-                                        placeholder="+1 (555) 000-0000"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                    />
-                                    <Select
-                                        label="Gender"
-                                        name="gender"
-                                        value={formData.gender}
-                                        onChange={handleChange}
-                                        options={[
-                                            { value: 'MALE', label: 'Male' },
-                                            { value: 'FEMALE', label: 'Female' },
-                                            { value: 'OTHER', label: 'Other' }
-                                        ]}
-                                    />
-                                </div>
-                            </section>
-
-                            <div className="border-t border-gray-100"></div>
-
-                            {/* Employment Details */}
-                            <section>
-                                <div className="flex items-center space-x-2 text-blue-900 mb-6">
-                                    <Briefcase className="h-5 w-5 opacity-70" />
-                                    <h3 className="text-sm font-bold uppercase tracking-wider">Employment Details</h3>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                                    <Select
-                                        label="Department *"
-                                        name="departmentId"
-                                        required
-                                        value={formData.departmentId}
-                                        onChange={handleChange}
-                                        options={[
-                                            { value: '', label: 'Select Department' },
-                                            ...departments.map(d => ({ value: d._id, label: d.name }))
-                                        ]}
-                                    />
-                                    <Input
-                                        label="Designation *"
-                                        name="designation"
-                                        required
-                                        placeholder="e.g. Senior Developer"
-                                        value={formData.designation}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mt-6">
-                                    <Input
-                                        label="Joining Date *"
-                                        name="joiningDate"
-                                        type="date"
-                                        required
-                                        value={formData.joiningDate}
-                                        onChange={handleChange}
-                                    />
-                                    <Select
-                                        label="Employment Type"
-                                        name="employmentType"
-                                        value={formData.employmentType}
-                                        onChange={handleChange}
-                                        options={[
-                                            { value: 'FULL_TIME', label: 'Full Time' },
-                                            { value: 'PART_TIME', label: 'Part Time' },
-                                            { value: 'CONTRACT', label: 'Contract' },
-                                            { value: 'INTERN', label: 'Intern' },
-                                        ]}
-                                    />
-                                    <Input
-                                        label="Current Salary (Annual) *"
-                                        name="currentSalary"
-                                        type="number"
-                                        required
-                                        placeholder="0.00"
-                                        value={formData.currentSalary}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </section>
-                        </div>
-
-                        <div className="mt-10 pt-6 border-t border-gray-100 flex justify-end gap-3">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.back()}
-                                className="px-6"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                isLoading={loading}
-                                icon={<Save className="h-4 w-4" />}
-                                className="px-6 bg-blue-700 hover:bg-blue-800 text-white shadow-md shadow-blue-200"
-                            >
-                                Save Employee
-                            </Button>
-                        </div>
-                    </form>
+                    <div className={styles.fieldGroup}>
+                        <label>Last Name</label>
+                        <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required />
+                    </div>
                 </div>
-            </div>
-        </Shell>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Personal Email ID</label>
+                        <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Mobile Number</label>
+                        <input type="tel" value={mobile} onChange={e => setMobile(e.target.value)} required />
+                    </div>
+                </div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Date of Birth</label>
+                        <input type="date" value={dob} onChange={e => setDob(e.target.value)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Gender</label>
+                        <select value={gender} onChange={e => setGender(e.target.value)} required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>Current Address</label>
+                    <textarea value={currentAddress} onChange={e => setCurrentAddress(e.target.value)} required rows={3} />
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={sameAsCurrent} onChange={e => setSameAsCurrent(e.target.checked)} />
+                        Same as current address
+                    </label>
+                </div>
+                {!sameAsCurrent && (
+                    <div className={styles.fieldGroup}>
+                        <label>Permanent Address</label>
+                        <textarea value={permanentAddress} onChange={e => setPermanentAddress(e.target.value)} required rows={3} />
+                    </div>
+                )}
+
+                {/* 2️⃣ Identity & Compliance Documents */}
+                <div className={styles.sectionHeader}>Identity & Compliance Documents</div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Aadhaar Card (PDF/Image)</label>
+                        <input type="file" accept=".pdf,.jpg,.png" onChange={e => setAadharFile(e.target.files?.[0] ?? null)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>PAN Card (PDF/Image)</label>
+                        <input type="file" accept=".pdf,.jpg,.png" onChange={e => setPanFile(e.target.files?.[0] ?? null)} required />
+                    </div>
+                </div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Passport / Voter ID (PDF/Image)</label>
+                        <input type="file" accept=".pdf,.jpg,.png" onChange={e => setIdFile(e.target.files?.[0] ?? null)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Photograph (passport‑size)</label>
+                        <input type="file" accept=".jpg,.png" onChange={e => setPhotoFile(e.target.files?.[0] ?? null)} required />
+                    </div>
+                </div>
+
+                {/* 3️⃣ Education Details */}
+                <div className={styles.sectionHeader}>Education Details</div>
+                <div className={styles.fieldGroup}>
+                    <label>Highest Qualification</label>
+                    <input type="text" value={qualification} onChange={e => setQualification(e.target.value)} required />
+                </div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>University / College Name</label>
+                        <input type="text" value={college} onChange={e => setCollege(e.target.value)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Year of Passing</label>
+                        <input type="number" min="1900" max="2100" value={yearOfPassing} onChange={e => setYearOfPassing(e.target.value)} required />
+                    </div>
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>Markscards (multiple files)</label>
+                    <input type="file" multiple accept=".pdf,.jpg,.png" onChange={e => setMarksFiles(Array.from(e.target.files ?? []))} />
+                </div>
+
+                {/* 4️⃣ Employment Details */}
+                <div className={styles.sectionHeader}>Employment Details</div>
+                <div className={styles.fieldGroup}>
+                    <label>Employment Type</label>
+                    <select value={employmentType} onChange={e => setEmploymentType(e.target.value)} required>
+                        <option value="">Select</option>
+                        <option value="Fresher">Fresher</option>
+                        <option value="Experienced">Experienced</option>
+                    </select>
+                </div>
+                {employmentType === 'Experienced' && (
+                    <>
+                        <div className={styles.gridTwo}>
+                            <div className={styles.fieldGroup}>
+                                <label>Total Years of Experience</label>
+                                <input type="number" min="0" step="0.1" value={yearsExperience} onChange={e => setYearsExperience(e.target.value)} />
+                            </div>
+                            <div className={styles.fieldGroup}>
+                                <label>Previous Company Name(s)</label>
+                                <input type="text" value={previousCompanies} onChange={e => setPreviousCompanies(e.target.value)} />
+                            </div>
+                        </div>
+                        <div className={styles.fieldGroup}>
+                            <label>Experience Letter (PDF)</label>
+                            <input type="file" accept=".pdf,.jpg,.png" onChange={e => setExperienceFile(e.target.files?.[0] ?? null)} />
+                        </div>
+                    </>
+                )}
+
+                {/* 5️⃣ Bank & Payroll Information */}
+                <div className={styles.sectionHeader}>Bank & Payroll Information</div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Bank Account Number</label>
+                        <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>IFSC Code</label>
+                        <input type="text" value={ifsc} onChange={e => setIfsc(e.target.value)} required />
+                    </div>
+                </div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Bank Name</label>
+                        <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} required />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Account Holder Name</label>
+                        <input type="text" value={accountHolder} onChange={e => setAccountHolder(e.target.value)} required />
+                    </div>
+                </div>
+
+                {/* 6️⃣ Additional (Optional) */}
+                <div className={styles.sectionHeader}>Additional Information</div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Emergency Contact Name</label>
+                        <input type="text" value={emergencyName} onChange={e => setEmergencyName(e.target.value)} />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Emergency Contact Number</label>
+                        <input type="tel" value={emergencyNumber} onChange={e => setEmergencyNumber(e.target.value)} />
+                    </div>
+                </div>
+                <div className={styles.gridTwo}>
+                    <div className={styles.fieldGroup}>
+                        <label>Relationship</label>
+                        <input type="text" value={emergencyRelation} onChange={e => setEmergencyRelation(e.target.value)} />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label>Blood Group (optional)</label>
+                        <input type="text" value={bloodGroup} onChange={e => setBloodGroup(e.target.value)} placeholder="e.g., A+, O-" />
+                    </div>
+                </div>
+
+                <button type="submit" className={styles.submitBtn}>🚀 Onboard Employee</button>
+            </form>
+        </section>
     );
 }

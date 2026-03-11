@@ -25,7 +25,7 @@ export default function SettingsPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     return (
-        <Shell title="System Settings">
+        <Shell title="Institution Settings">
             <div className={styles.container}>
                 <div className={styles.settingsGrid}>
                     <aside className={styles.sidebar}>
@@ -55,15 +55,15 @@ export default function SettingsPage() {
                             onClick={() => setActiveTab('company')}
                         >
                             <Building2 size={18} />
-                            <span>Company Config 🏢</span>
+                            <span>Institutional Setup 🏢</span>
                         </button>
                     </aside>
 
                     <main className={styles.content}>
                         {activeTab === 'profile' && (
                             <div className={styles.section}>
-                                <h2>Account Profile 🤠</h2>
-                                <p>Manage your public profile and personal information details here. ✨</p>
+                                <h2>Academic Profile 🤠</h2>
+                                <p>Manage your institutional profile and professional details here. ✨</p>
 
                                 <div className={styles.avatarSection}>
                                     <div className={styles.avatarLarge}>
@@ -71,8 +71,8 @@ export default function SettingsPage() {
                                         <button className={styles.cameraBtn}><Camera size={16} /></button>
                                     </div>
                                     <div className={styles.avatarInfo}>
-                                        <h3>Admin User</h3>
-                                        <span>Super Administrator</span>
+                                        <h3>Dean Administrator</h3>
+                                        <span>Chief Institutional Officer</span>
                                     </div>
                                 </div>
 
@@ -83,7 +83,7 @@ export default function SettingsPage() {
                                     </div>
                                     <div className={styles.inputGroup}>
                                         <label>Email Address 📧</label>
-                                        <input type="email" defaultValue="admin@kiccpa.com" />
+                                        <input type="email" defaultValue="dean@edutech.com" />
                                     </div>
                                     <div className={styles.inputGroup}>
                                         <label>Phone Number 📱</label>
@@ -217,13 +217,13 @@ export default function SettingsPage() {
 
                         {activeTab === 'company' && (
                             <div className={styles.section}>
-                                <h2>Company Configuration ⚙️</h2>
-                                <p>Global system settings for KICCPA. 🔧</p>
+                                <h2>Institutional Setup ⚙️</h2>
+                                <p>Global system settings for EduTech Academy. 🔧</p>
 
                                 <div className={styles.formGrid}>
                                     <div className={styles.inputGroup}>
-                                        <label>Company Display Name 🏷️</label>
-                                        <input type="text" defaultValue="KICCPA India" />
+                                        <label>Institution Display Name 🏷️</label>
+                                        <input type="text" defaultValue="EduTech Academy India" />
                                     </div>
                                     <div className={styles.inputGroup}>
                                         <label>Tax ID / GSTIN 🧾</label>

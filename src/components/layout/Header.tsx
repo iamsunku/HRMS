@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import styles from './Header.module.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useUser } from '@/hooks/useUser';
 import ProfileDrawer from './ProfileDrawer';
 
@@ -64,6 +65,17 @@ export default function Header({ title, onMenuClick }: HeaderProps) {
     return (
         <header className={styles.header}>
             <div className={styles.left}>
+                <Link href="/" className="flex items-center gap-3 mr-8 ml-4">
+                    <div className="relative w-[140px] h-[60px]"> {/* Increased height slightly for better aspect ratio */}
+                        <Image
+                            src="/kam_logo_transparent.png"
+                            alt="Kam Global Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                </Link>
                 <button
                     className={styles.menuTrigger}
                     onClick={onMenuClick}
@@ -71,7 +83,7 @@ export default function Header({ title, onMenuClick }: HeaderProps) {
                 >
                     <Menu size={24} />
                 </button>
-                <h1>{title}</h1>
+                <h1 className="ml-8 text-lg font-bold text-slate-900 tracking-tight whitespace-nowrap">{title}</h1>
             </div>
 
             <div className={styles.right}>

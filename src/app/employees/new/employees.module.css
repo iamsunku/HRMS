@@ -1,0 +1,181 @@
+/* Premium glass‑morphic styling for the New Employee onboarding form */
+
+:root {
+    /* Color palette – harmonious dark‑mode friendly hues */
+    --primary-bg: rgba(255, 255, 255, 0.08);
+    --primary-bg-hover: rgba(255, 255, 255, 0.12);
+    --border-color: rgba(255, 255, 255, 0.15);
+    --text-primary: #e5e7eb;
+    /* slate‑200 */
+    --text-muted: #9ca3af;
+    /* slate‑400 */
+    --accent: #7c3aed;
+    /* violet‑600 */
+    --accent-hover: #a78bfa;
+    /* violet‑400 */
+    --gradient-start: rgba(124, 58, 237, 0.4);
+    --gradient-end: rgba(168, 85, 247, 0.4);
+}
+
+/* Container with backdrop blur and subtle gradient */
+.container {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 2rem 2.5rem;
+    background: var(--primary-bg);
+    border-radius: 1.5rem;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+}
+
+.title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.fieldGroup label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.fieldGroup input {
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.fieldGroup input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.fieldGroup input::placeholder {
+    color: var(--text-muted);
+}
+
+.submitBtn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.submitBtn:hover {
+    background: var(--accent-hover);
+}
+
+.submitBtn:active {
+    transform: translateY(1px);
+}
+
+.unauth {
+    max-width: 600px;
+    margin: 5rem auto;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    background: var(--primary-bg);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(8px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.6rem;
+    }
+}
+
+/* New Styles for Expanded Form */
+.gridTwo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .gridTwo {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sectionHeader {
+    grid-column: 1 / -1;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.fieldGroup textarea,
+.fieldGroup select {
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    width: 100%;
+    font-family: inherit;
+}
+
+.fieldGroup textarea:focus,
+.fieldGroup select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.fieldGroup input[type="file"] {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.fieldGroup input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+}

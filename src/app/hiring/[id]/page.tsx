@@ -72,7 +72,7 @@ export default function JobDetailsPage() {
     if (loading) return (
         <Shell title="Job Details">
             <div className="flex h-64 items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-violet-600"></div>
             </div>
         </Shell>
     );
@@ -92,12 +92,12 @@ export default function JobDetailsPage() {
 
                 {/* Preview Mode Banner */}
                 {usingMock && (
-                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                    <div className="bg-violet-50 border border-violet-100 rounded-2xl p-4 flex items-center justify-between shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse"></div>
+                            <div className="h-2 w-2 bg-violet-500 rounded-full animate-pulse"></div>
                             <div>
-                                <p className="text-sm font-bold text-blue-800">Job Detail Preview</p>
-                                <p className="text-xs text-blue-600 mt-0.5">Database connection is offline. Showing sample job descriptions.</p>
+                                <p className="text-sm font-bold text-violet-800">Job Detail Preview</p>
+                                <p className="text-xs text-violet-600 mt-0.5">Database connection is offline. Showing sample job descriptions.</p>
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@ export default function JobDetailsPage() {
                     <div className="flex items-center gap-5">
                         <button
                             onClick={() => router.back()}
-                            className="h-10 w-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-100 shadow-sm transition-all"
+                            className="h-10 w-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-violet-600 hover:border-violet-100 shadow-sm transition-all"
                         >
                             <ArrowLeft size={20} />
                         </button>
@@ -130,7 +130,7 @@ export default function JobDetailsPage() {
                     </div>
                     <div className="flex gap-3">
                         <Button variant="outline" icon={<Share2 size={18} />}>Share</Button>
-                        <Button className="bg-[#1e3a8a] text-white shadow-xl shadow-blue-900/20" icon={<Edit3 size={18} />}>Edit Opening</Button>
+                        <Button className="bg-[#4c1d95] text-white shadow-xl shadow-violet-900/20" icon={<Edit3 size={18} />}>Edit Opening</Button>
                     </div>
                 </div>
 
@@ -140,10 +140,10 @@ export default function JobDetailsPage() {
                         {/* Description Card */}
                         <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
                             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                                <CheckCircle2 className="text-blue-600" size={24} />
+                                <CheckCircle2 className="text-violet-600" size={24} />
                                 Job Overview
                             </h2>
-                            <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
+                            <div className="prose prose-indigo max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
                                 {job.description || "No description provided."}
                             </div>
                         </div>
@@ -163,11 +163,11 @@ export default function JobDetailsPage() {
                     {/* Right Column - Stats & Summary */}
                     <div className="space-y-6">
                         {/* Quick Stats */}
-                        <div className="bg-[#1e3a8a] text-white rounded-3xl p-8 shadow-2xl shadow-blue-900/40 relative overflow-hidden">
+                        <div className="bg-[#4c1d95] text-white rounded-3xl p-8 shadow-2xl shadow-violet-900/40 relative overflow-hidden">
                             <div className="relative z-10">
-                                <h3 className="text-sm font-bold text-blue-200 uppercase tracking-widest mb-6">Candidate Pipeline</h3>
+                                <h3 className="text-sm font-bold text-violet-200 uppercase tracking-widest mb-6">Candidate Pipeline</h3>
                                 <div className="text-5xl font-black mb-2">{job.candidates}</div>
-                                <p className="text-blue-100 text-sm font-medium">Applied candidates for this role</p>
+                                <p className="text-violet-100 text-sm font-medium">Applied candidates for this role</p>
                                 <Button className="w-full mt-8 bg-white/10 hover:bg-white/20 border-white/20 text-white backdrop-blur-md" icon={<ExternalLink size={18} />}>
                                     View Applications
                                 </Button>
@@ -184,7 +184,7 @@ export default function JobDetailsPage() {
                             <div className="space-y-5">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3 text-gray-400 font-bold text-xs uppercase tracking-wider">
-                                        <Clock size={16} className="text-blue-500" />
+                                        <Clock size={16} className="text-violet-500" />
                                         Employment
                                     </div>
                                     <span className="text-sm font-black text-gray-900">{job.type.replace('_', ' ')}</span>
