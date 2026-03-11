@@ -7,7 +7,7 @@ import {
     TrendingUp,
     Clock,
     Wallet,
-    IndianRupee,
+
     Activity,
     ChevronRight,
     Target,
@@ -25,14 +25,14 @@ export default function Overview() {
 
     const stats = [
         {
-            label: 'Total Revenue',
-            value: '₹ 1.24M',
-            change: '+14% ',
+            label: 'Projects Running',
+            value: '12',
+            change: '+2',
             changeType: 'positive',
-            icon: IndianRupee,
+            icon: Briefcase,
             color: 'text-blue-600',
             bg: 'bg-blue-50',
-            href: '/finance'
+            href: '/projects'
         },
         {
             label: 'Active Workforce',
